@@ -14,16 +14,17 @@
 }
 
 .remove-sidebar {
-  width: 0; 
   transform: translateX(-100%);
   overflow: hidden;
   padding: 0; 
+  width: 0; 
 }
 
 
 .pages {
-  flex-grow: 1;
+  flex: 1;
   overflow-y: auto;
+  width: calc(100% -200px);
   height: 100%;
 }
 
@@ -44,6 +45,10 @@
 
   .remove-sidebar {
     transform: translateX(-100%);
+  }
+
+  .pages{
+    height: 100%;
   }
 
   .overlay {
