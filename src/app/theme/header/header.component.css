@@ -1,0 +1,12 @@
+.profile{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.header-logo{
+    width: 70px;
+    height: 100%;
+    object-fit: contain;
+}

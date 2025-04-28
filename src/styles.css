@@ -1,1 +1,121 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+/* Light Theme (Default) */
+:root {
+    --background-color: #f5f5f5;
+    --text-color: #1e1e1e;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --border-color: #e0e0e0;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    --gradient-bg: linear-gradient(to top, #b224ef 0%, #7579ff 100%);
+    --gradient-color:white
+}
+
+/* Dark Theme */
+.dark-theme {
+    --background-color: #2d2d30;
+    --text-color: #f5f5f5;
+    --primary-color: #3b82f6;
+    --secondary-color: #a0aec0;
+    --border-color: #333;
+    --card-bg: #19191c;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    --gradient-bg: linear-gradient(to top, #b224ef 0%, #7579ff 100%);
+    --gradient-color:white
+}
+
+/* Apply Variables */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.body-theme-color{
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.card-theme-color{
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.fs-10{
+    font-size: 10px !important;
+}
+.fs-11{
+    font-size: 11px !important;
+}
+.fs-12{
+    font-size: 12px !important;
+}
+.fs-13{
+    font-size: 13px !important;
+}
+.fs-14{
+    font-size: 14px !important;
+}
+.fs-15{
+    font-size: 15px !important;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.gradient-bg{
+    background: var(--gradient-bg);
+    color:var(--gradient-color)
+}
+
+.btn-xsm {
+    --bs-btn-padding-y: 0.5rem !important;
+    --bs-btn-padding-x: 0.5rem !important;
+    --bs-btn-font-size: 0.605rem !important;
+    --bs-btn-border-radius: var(--bs-border-radius-sm) !important;
+}
+
+
+.form-control-sm{
+    font-size: 10px !important;
+}
+.form-select-sm{
+    font-size: 10px !important;
+}
+.input-group-text{
+    font-size: 10px !important;
+}
+
+.my-btn-size{
+border: none;
+text-transform: capitalize;
+font-size: 11px;
+height: 24px;
+color: white;
+border-radius: 3px;
+}
+
+.primary{
+    background-color: #007bff;
+}
+.success{
+    background-color: #198754;
+}
+.danger{
+    background-color: #dc3545;
+}

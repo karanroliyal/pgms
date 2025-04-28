@@ -1,0 +1,20 @@
+<div class="vw-100 vh-100 body-theme-color">
+
+    <div class="header">
+        <app-header (sidebarToggle)="sidebarState($event)"></app-header>
+    </div>
+
+    <!-- Add overlay div -->
+    <div class="overlay " [class.active]="sidebarVisible && isMobileView"></div>
+
+    <div class="sidebar-pages-container row mx-0 p-0 body-theme-color">
+        <div class="p-0 card-theme-color" [ngClass]="sidebarVisible? 'sidebar' : 'remove-sidebar sidebar' ">
+            <app-sidebar></app-sidebar>
+        </div>
+        <div class="pages col-10 px-2 pt-1 pb-1 body-theme-color">
+           <router-outlet></router-outlet>
+        </div>
+
+    </div>
+
+</div>

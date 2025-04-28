@@ -1,0 +1,10 @@
+<div class="sidebar-menu card-theme-color h-100 w-100 px-2 py-1">
+
+    @for(menus of myMenu ; track $index){
+
+        <li  class="rounded mb-2 px-2 pt-1 pb-1 fs-13 cursor-pointer" routerLink="{{menus.menu_url}}" routerLinkActive="active-link" ><i class="{{menus.icon_class}}" ></i> {{menus.menu | titlecase}}</li>
+
+    }
+
+
+</div>

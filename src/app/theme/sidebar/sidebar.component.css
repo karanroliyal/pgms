@@ -1,0 +1,17 @@
+.sidebar-menu {
+    padding: 5px;
+
+    li {
+        list-style: none;
+    }
+
+    .active-link {
+        background: var(--gradient-bg);
+        color: var(--gradient-color);
+    }
+}
+
+.sidebar-menu li:hover {
+    color: var(--gradient-color);
+    background: var(--gradient-bg);
+}
