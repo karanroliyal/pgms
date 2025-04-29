@@ -126,50 +126,67 @@
                 <div class="modal-body">
                     
 
-                    <form>
+                    <form [formGroup]="clientForm">
 
                         <div class="row mx-0 p-0">
 
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label >Name <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" >
+                                <input type="text" class="form-control form-control-sm" formControlName="name" >
+                                <app-form-validation-message [formGroup]="clientForm" controlName="name"
+                                        fieldName="Name"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label >Email  <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" >
+                                <input type="text" class="form-control form-control-sm" formControlName="email" >
+                                <app-form-validation-message [formGroup]="clientForm" controlName="email"
+                                        fieldName="Email"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label >Phone  <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" >
+                                <input type="text" class="form-control form-control-sm" formControlName="phone" >
+                                <app-form-validation-message [formGroup]="clientForm" controlName="phone"
+                                        fieldName="Phone"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > Password  <span class="text-danger">*</span> </label>
-                                <input type="password" class="form-control form-control-sm" >
+                                <input type="password" class="form-control form-control-sm" formControlName="password" >
+                                <app-form-validation-message [formGroup]="clientForm" controlName="password"
+                                        fieldName="Password"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > Address <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" >
+                                <input type="text" class="form-control form-control-sm" formControlName="address" >
+                                <app-form-validation-message [formGroup]="clientForm" controlName="address"
+                                        fieldName="Address"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
                                 <label > Status <span class="text-danger">*</span> </label>
-                                <select name="" class="form-select form-select-sm" id="">
+                                <select formControlName="status" class="form-select form-select-sm" id="">
                                     <option value="1" selected>Active</option>
                                     <option value="0" >Inactive</option>
                                 </select>
+                                <app-form-validation-message [formGroup]="clientForm" controlName="status"
+                                        fieldName="Status"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > State <span class="text-danger">*</span> </label>
-                                <select name="" class="form-select form-select-sm" id=""></select>
+                                <select formControlName="state" class="form-select form-select-sm" id=""></select>
+                                <app-form-validation-message [formGroup]="clientForm" controlName="state"
+                                        fieldName="State"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > District <span class="text-danger">*</span> </label>
-                                <select name="" class="form-select form-select-sm" id=""></select>
+                                <select formControlName="district" class="form-select form-select-sm" id=""></select>
+                                <app-form-validation-message [formGroup]="clientForm" controlName="district"
+                                        fieldName="district"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > Profile <span class="text-danger">*</span> </label>
-                                <input type="file" class="form-control form-control-sm" >
+                                <input formControlName="profile" type="file" class="form-control form-control-sm" >
+                                <app-form-validation-message [formGroup]="clientForm" controlName="profile"
+                                        fieldName="Profile"></app-form-validation-message>
                             </div>
-                            
                       
                         </div>
 
@@ -178,7 +195,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-xsm btn-danger">reset</button>
-                    <button type="button" class="btn btn-sm btn-xsm btn-primary">Add client</button>
+                    <button type="button" (click)="addClient()" class="btn btn-sm btn-xsm btn-primary">Add client</button>
                 </div>
             </div>
         </div>
