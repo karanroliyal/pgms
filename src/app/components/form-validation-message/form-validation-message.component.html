@@ -1,0 +1,40 @@
+@if (control?.invalid && (control?.dirty || control?.touched)) {
+
+  @if (control?.hasError('required')) {
+    <small class="text-danger">{{ fieldName }} is required.</small>
+  }
+  @else if (control?.hasError('email')) {
+    <small class="text-danger">Enter a valid email.</small>
+  }
+  @else if (control?.hasError('minlength')) {
+    <small class="text-danger">
+      {{ fieldName }} must be at least 
+      {{ control?.errors?.['minlength']?.requiredLength }} characters long.
+    </small>
+  }
+  @else if (control?.hasError('maxlength')) {
+    <small class="text-danger">
+      {{ fieldName }} cannot be more than 
+      {{ control?.errors?.['maxlength']?.requiredLength }} characters long.
+    </small>
+  }
+  @else if (control?.hasError('pattern')) {
+    @if (fieldName === 'Password') {
+      <small class="text-danger">
+        Password must include uppercase, lowercase, number, and special character.
+      </small>
+    }
+    @else if (fieldName === 'Mobile No') {
+      <small class="text-danger">Enter a valid mobile number.</small>
+    }
+    @else if (fieldName === 'Username') {
+      <small class="text-danger">
+        Username can contain only letters, numbers, and underscores.
+      </small>
+    }
+    @else {
+      <small class="text-danger">{{ fieldName }} format is invalid.</small>
+    }
+  }
+
+}

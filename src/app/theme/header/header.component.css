@@ -10,3 +10,23 @@
     height: 100%;
     object-fit: contain;
 }
+
+.logo-section{
+    width: 200px;
+}
+
+.header-section{
+    width: calc(100% - 200px);
+}
+
+/* Mobile/Tablet behavior */
+@media (max-width: 768px) {
+
+    .logo-section{
+        width: 100px;
+    }
+    
+    .header-section{
+        width: calc(100% - 100px);
+    }
+}
