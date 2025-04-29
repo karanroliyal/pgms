@@ -1,40 +1,52 @@
 <div class="client-wrapper w-100 h-100 position-relative">
 
     <div class="add-filter-container d-flex justify-content-end gap-2 position-relative mb-2">
-        <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i class="bi bi-funnel"  ></i> Filter</button>
-        <button class="btn btn-sm btn-xsm btn-primary"><i class="bi bi-people"></i> Add client</button>
+        <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i
+                class="bi bi-funnel"></i> Filter</button>
+        <button class="btn btn-sm btn-xsm btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="bi bi-people"></i> Add client</button>
     </div>
 
 
     <!-- Filter  -->
-    
-    <div class="filter-conatiner card-theme-color  pt-2 rounded m-0 p-0 mb-2" [ngClass]="filterOption ? '' : 'd-none' ">
-        <form [formGroup]="filterForm" class="row mx-0 p-0 ">
 
-            <div class="mb-2 col-md-3">
+    <div class="filter-conatiner card-theme-color  pt-2 rounded m-0 p-0 mb-2" [ngClass]="filterOption ? '' : 'd-none' ">
+        <form [formGroup]="filterForm" class="row mx-0 p-0 " (submit)="getTable()">
+
+            <div class="mb-2 col-md-2">
                 <div class="input-group input-group-sm mb-1">
-                    <span class="input-group-text  " id="basic-addon1">Name</span>
-                    <input type="text" class="form-control form-control-sm " placeholder="Enter client name..">
-                  </div>
+                    <span class="input-group-text" id="nameId">Name</span>
+                    <input type="text" class="form-control form-control-sm " formControlName="name"
+                        placeholder="Enter name">
+                </div>
             </div>
             <div class="mb-2 col-md-3">
                 <div class="input-group input-group-sm mb-1">
-                    <span class="input-group-text " id="basic-addon1">Email</span>
-                    <input type="text" class="form-control form-control-sm " placeholder="Enter client email..">
-                  </div>
+                    <span class="input-group-text " id="emailId">Email</span>
+                    <input type="text" class="form-control form-control-sm " formControlName="email"
+                        placeholder="Enter email">
+                </div>
             </div>
-            <div class="mb-2 col-md-3">
+            <div class="mb-2 col-md-2">
                 <div class="input-group input-group-sm mb-1">
-                    <span class="input-group-text" id="basic-addon1">Status</span>
-                    <select class="form-select form-select-sm">
-                        <option value="1">Active</option>
+                    <span class="input-group-text " id="phoneId">Phone</span>
+                    <input type="text" class="form-control form-control-sm " formControlName="phone"
+                        placeholder="Enter phone">
+                </div>
+            </div>
+            <div class="mb-2 col-md-2">
+                <div class="input-group input-group-sm mb-1">
+                    <span class="input-group-text" id="statusId">Status</span>
+                    <select class="form-select form-select-sm" formControlName="status">
+                        <option value="">select</option>
+                        <option selected value="1">Active</option>
                         <option value="0">Inactive</option>
                     </select>
-                  </div>
+                </div>
             </div>
             <div class="mb-2 col-md-3 d-flex gap-2">
                 <button type="submit" class="my-btn-size success"><i class="bi bi-search"></i> search</button>
-                <button type="button" class="my-btn-size danger "><i class="bi bi-x"></i> reset</button>
+                <button type="button" class="my-btn-size danger " (click)="resetFilterForm()"><i class="bi bi-x"></i>
+                    reset</button>
             </div>
 
         </form>
@@ -43,7 +55,84 @@
     <!-- Filter  -->
 
     <!-- Paggination and limit component  -->
-     <app-pagination></app-pagination>
+    <app-pagination [formGroup]="filterForm" [limit]="limit" [total_pages]="total_pages" [page_no]="page"
+        [callback]="getTable.bind(this)"></app-pagination>
     <!-- Paggination and limit component  -->
+
+    <!-- table  -->
+
+    <div class="table-wrapper  rounded">
+
+        <table class="table fs-10 ">
+            <thead>
+                <tr>
+                    <th>Sno.</th>
+                    <th (click)="sortingTable('name')">Name <i class="bi bi-arrow-up-short"
+                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'ASC'}"></i>
+                        <i class="bi bi-arrow-down-short"
+                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'DESC'}"></i>
+                    </th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(items of table_data ; track $index ; let i = $index){
+                <tr>
+                    <td>{{ (page - 1) * limit + i + 1 }}</td>
+                    <td>{{items.name}}</td>
+                    <td>{{items.email}}</td>
+                    <td>{{items.phone}}</td>
+                    <td>
+                        <span class="badge bg-success" [ngClass]="items.status === 1 ? 'bg-success' : 'bg-danger'">{{
+                            items.status === 1 ? 'Active' : 'Inactive' }}</span>
+                    </td>
+                    <td class="d-flex justify-content-center gap-2">
+                        <button class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
+                        <button class="my-btn-size danger"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                }
+                <!-- <tr>
+                    <td>1</td>
+                    <td>Karan rawat</td>
+                    <td>Karangmail.com</td>
+                    <td>9887328732</td>
+                    <td><span class="badge bg-danger">Inactive</span></td>
+                    <td class="d-flex justify-content-center gap-2">
+                        <button class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
+                        <button class="my-btn-size danger"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr> -->
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- table  -->
+
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-6" id="exampleModalLabel">Add Client</h5>
+                    <button type="button" class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-xsm btn-secondary" data-bs-dismiss="modal">reset</button>
+                    <button type="button" class="btn btn-sm btn-xsm btn-primary">Add client</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Modal -->
 
 </div>

@@ -1,4 +1,4 @@
-<div class="pagination-warpper m-0 p-0 px-2 py-2 card-theme-color">
+<div class="pagination-warpper m-0 p-0 px-2 py-2 card-theme-color rounded mb-2">
 
     <div class="d-flex justify-content-between mx-0 p-0">
 
@@ -7,7 +7,7 @@
             <div class="input-group input-group-sm">
 
                 <span class="input-group-text">Select row</span>
-                <select class="form-select form-select-sm">
+                <select (change)="setLimit(limit.value)" #limit class="form-select form-select-sm">
                     <option value="10">10</option>
                     <option value="15">15</option>
                     <option value="20">20</option>
@@ -20,26 +20,24 @@
     
         <div class="pagination-warpper ">
             <nav aria-label="Page navigation example">
-                <ul class="pagination pagination-sm m-0">
-                    <li class="page-item">
+                <ul class="pagination pagination-sm m-0 cursor-pointer">
+                    <li class="page-item" [class.disabled]="page_no() <= 1" (click)="first()">
                         <a class="page-link fs-10"  aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    <li class="page-item">
+                    <li class="page-item" [class.disabled]="page_no() <= 1" (click)="previous()">
                       <a class="page-link fs-10"  aria-label="Previous">
                         <span aria-hidden="true">&lsaquo;</span>
                       </a>
                     </li>
-                  <li class="page-item"><a class="page-link fs-10" >1</a></li>
-                  <!-- <li class="page-item"><a class="page-link fs-10" >2</a></li>
-                  <li class="page-item"><a class="page-link fs-10" >3</a></li> -->
-                  <li class="page-item">
+                  <li class="page-item"><a class="page-link fs-10" >{{page_no()}}</a></li>
+                  <li class="page-item" (click)="next()" [class.disabled]="page_no() == total_pages() || page_no() == 0">
                     <a class="page-link fs-10" aria-label="Next">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
-                  <li class="page-item">
+                  <li class="page-item" (click)="last()" [class.disabled]="page_no() == total_pages() || page_no() == 0">
                     <a class="page-link fs-10" aria-label="Next">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
