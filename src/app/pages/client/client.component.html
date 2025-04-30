@@ -64,7 +64,7 @@
     <div class="table-wrapper  rounded">
 
         <table class="table fs-10 ">
-            <thead>
+            <thead class="cursor-pointer user-selection-none">
                 <tr>
                     <th>Sno.</th>
                     <th (click)="sortingTable('name')">Name <i class="bi bi-arrow-up-short"
@@ -162,7 +162,7 @@
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
                                 <label > Status <span class="text-danger">*</span> </label>
-                                <select formControlName="status" class="form-select form-select-sm" id="">
+                                <select formControlName="status" class="form-select form-select-sm"  >
                                     <option value="1" selected>Active</option>
                                     <option value="0" >Inactive</option>
                                 </select>
@@ -171,13 +171,22 @@
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > State <span class="text-danger">*</span> </label>
-                                <select formControlName="state" class="form-select form-select-sm" id=""></select>
+                                <select formControlName="state" (change)="getDistrict(state_id.value)" #state_id class="form-select form-select-sm" >
+                                    <option value="">--select state--</option>
+                                    @for (item of state_data; track $index) {
+                                        <option [value]="item.state_id">{{ item.state_name }}</option>
+                                      }
+                                </select>
                                 <app-form-validation-message [formGroup]="clientForm" controlName="state"
                                         fieldName="State"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > District <span class="text-danger">*</span> </label>
-                                <select formControlName="district" class="form-select form-select-sm" id=""></select>
+                                <select formControlName="district" class="form-select form-select-sm" >
+                                    @for (item of district_data; track $index) {
+                                        <option [value]="item.district_id">{{ item.district_name }}</option>
+                                      }
+                                </select>
                                 <app-form-validation-message [formGroup]="clientForm" controlName="district"
                                         fieldName="district"></app-form-validation-message>
                             </div>

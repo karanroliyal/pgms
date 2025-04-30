@@ -15,5 +15,12 @@ export class ApiService {
   postApi(url:string , data:any){
     return this.http.post( server_url+url , data)
   }
+  getApi(url:string , data:any){
+    return this.http.get(server_url+url)
+  }
+
+  getState(){
+    return this.http.get('assets/data/state_district.json')
+  }
 
 }

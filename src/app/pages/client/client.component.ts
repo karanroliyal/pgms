@@ -6,7 +6,14 @@ import { ApiService } from '../../services/api.service';
 import { GlobalService } from '../../services/global.service';
 import { FormValidationMessageComponent } from '../../components/form-validation-message/form-validation-message.component';
 
-
+interface state{
+  state_id : string,
+  state_name : string
+}
+interface district{
+  district_id : string,
+  district_name : string
+}
 
 
 
@@ -22,18 +29,22 @@ import { FormValidationMessageComponent } from '../../components/form-validation
 
 export class ClientComponent implements OnInit {
 
-  constructor(private api: ApiService, private GF: GlobalService) { }
-
-  ngOnInit(): void {
-    this.getTable()
-  }
-
   filterOption: boolean = false
   table_data: any
   total_records: number = 0
   page: number = 0
   limit: number = 0
   total_pages: number = 0
+  state_data:  state[] |any
+  district_data:  district[] |any
+
+  constructor(private api: ApiService, private GF: GlobalService) { }
+
+  ngOnInit(): void {
+    this.getTable()
+    this.getState()
+  }
+
 
 
   filterForm = new FormGroup({
@@ -133,6 +144,30 @@ export class ClientComponent implements OnInit {
         }
       )
     // }
+  }
+
+  getState(){
+    this.api.getState().subscribe(
+      (res:any)=>{
+          this.state_data = res.state
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
+    
+  }
+
+  getDistrict(state_id:string){
+    this.api.getState().subscribe(
+      (res:any)=>{
+          this.district_data = res.district.filter((ele:any)=>{ return ele.state_id == state_id})
+          console.log(this.district_data)
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
   }
 
 }
