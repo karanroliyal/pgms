@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms'
 import { PaginationComponent } from '../../components/pagination/pagination.component';
 import { ApiService } from '../../services/api.service';
@@ -37,6 +37,9 @@ export class ClientComponent implements OnInit {
   total_pages: number = 0
   state_data:  state[] |any
   district_data:  district[] |any
+  editMode: boolean = false
+  editClientId: string = ''
+  @ViewChild('modelClose') modelClose!: ElementRef;
 
   constructor(private api: ApiService, private GF: GlobalService) { }
 
@@ -44,8 +47,6 @@ export class ClientComponent implements OnInit {
     this.getTable()
     this.getState()
   }
-
-
 
   filterForm = new FormGroup({
     name: new FormControl(''),
@@ -69,8 +70,13 @@ export class ClientComponent implements OnInit {
     profile: new FormControl('', Validators.required),
     address: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required,Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).+$'), Validators.minLength(8), Validators.maxLength(15)]),
+    pincode: new FormControl('' , [Validators.required , Validators.minLength(6) , Validators.maxLength(6)]),
+    id: new FormControl('')
   })
 
+  filterSearch(){
+    this.filterForm.get('page')?.setValue(1)
+  }
 
   getTable() {
     this.api.postApi('pg-owner-table', this.filterForm.value).subscribe(
@@ -129,12 +135,20 @@ export class ClientComponent implements OnInit {
     const passwordControl = this.clientForm.get('password');
     passwordControl?.setValidators([Validators.required]);
     passwordControl?.updateValueAndValidity();
-    this.clientForm.markAllAsTouched()
-    // if (this.clientForm.valid) {
-      this.api.postApi('add-pg-owner' , this.clientForm.value).subscribe(
+    this.clientForm.markAllAsTouched();
+
+    const formData = {
+      ...this.clientForm.value,
+      profile: this.ownerProfile
+    };
+
+    if (this.clientForm.valid) {
+      this.api.postApi('add-pg-owner' , formData).subscribe(
         (res:any)=>{
           if(res.status){
             this.GF.showToast(res.message , 'success')
+            this.closeClientForm()
+            this.getTable()
           }else{
             this.GF.showToast(res.message , 'danger')
           }
@@ -143,10 +157,11 @@ export class ClientComponent implements OnInit {
           this.GF.showToast(err.error.message , 'danger')
         }
       )
-    // }
+    }
   }
 
   getState(){
+    this.clientForm.get('district')?.setValue('')
     this.api.getState().subscribe(
       (res:any)=>{
           this.state_data = res.state
@@ -159,15 +174,121 @@ export class ClientComponent implements OnInit {
   }
 
   getDistrict(state_id:string){
+    this.district_data = []
+    this.clientForm.get('district')?.setValue('')
     this.api.getState().subscribe(
       (res:any)=>{
           this.district_data = res.district.filter((ele:any)=>{ return ele.state_id == state_id})
-          console.log(this.district_data)
       },
       (err:any)=>{
         this.GF.showToast(err.error.message , 'danger')
       }
     )
+  }
+
+  // In your component class
+  ownerProfile: any;
+
+  fileUpload(event: any, fieldName: string) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // Convert file to base64
+      reader.onload = () => {
+        (this as any)[fieldName] = reader.result; // Dynamically assign to correct variable
+      };
+    }
+  }
+
+  deleteClient(clinetId:string){
+    this.api.postApi('delete' , {action:'pg_owner' , id:clinetId}).subscribe(
+      (res:any)=>{
+        if(res.status){
+          this.GF.showToast('Client deleted successfully' , 'success')
+          this.getTable()
+        }else{
+          this.GF.showToast(res.message , 'danger')
+        }
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
+  }
+
+  editClient(clientId:string){
+    this.clientForm.markAsUntouched()
+    this.editMode = true
+    this.ownerProfile = ''
+    this.api.postApi('get-list' , {action:'pg_owner' , id:clientId}).subscribe(
+      (res:any)=>{
+        if(res.status){
+          this.editClientId = res.data.id
+          delete res.data['profile']
+          delete res.data['password']
+          delete res.data['id']
+          this.clientForm.patchValue(res.data);
+          setTimeout(()=>{
+            this.getDistrict(res.data.state)
+            this.clientForm.get('district')?.setValue(res.data.district)
+          },200)
+        }else{
+          this.GF.showToast(res.message , 'danger')
+        }
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
+  }
+
+  updateClient(){
+    
+    // setting password validation 
+    const passwordControl = this.clientForm.get('password');
+    passwordControl?.setValidators([Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).+$'), Validators.minLength(8), Validators.maxLength(15)]);
+    passwordControl?.updateValueAndValidity();
+    // setting profile validation 
+    const profileControl = this.clientForm.get('profile');
+    profileControl?.clearValidators();  
+    profileControl?.updateValueAndValidity(); 
+
+
+    this.clientForm.markAllAsTouched();
+
+    const formData = {
+      ...this.clientForm.value,
+      profile: this.ownerProfile,
+      id: this.editClientId
+    };
+
+    if(this.clientForm.valid){
+      this.api.postApi('update-pg-owner' , formData ).subscribe(
+        (res:any)=>{
+          if(res.status){
+            this.GF.showToast(res.message , 'success')
+            this.closeClientForm()
+          }else{
+            this.GF.showToast(res.message , 'danger')
+          }
+        },
+        (err:any)=>{
+          this.GF.showToast(err.error.message , 'danger')
+        }
+      )
+    }
+  }
+
+  closeClientForm(){
+    this.modelClose.nativeElement.click()
+    this.clientForm.reset()
+  }
+
+  openAddClientForm(){
+    this.clientForm.reset()
+    this.clientForm.markAsUntouched()
+    this.editMode = false;
+    this.district_data = []
   }
 
 }
