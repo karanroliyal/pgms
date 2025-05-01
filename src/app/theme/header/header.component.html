@@ -1,11 +1,11 @@
 <div class="row mx-0 p-0  h-100 d-flex align-items-center position-relative card-theme-color">
 
-    <div class="col-2  d-flex align-items-center h-100 position-relative">
+    <div class="logo-section  d-flex align-items-center h-100 position-relative">
         <img src="../../../assets/images/amazon-prime-logo-420x420.webp" class="w-100 h-100 object-fit-contain" alt="">
         <i (click)="toggleSidebar()" class="cursor-pointer bi bi-justify-right position-absolute" style="right: -5px;"></i>
     </div>
 
-    <div class="col-10 d-flex align-items-center justify-content-end gap-3">
+    <div class="header-section d-flex align-items-center justify-content-end gap-3">
         <div>
             <i (click)="setTheme('light')" class="" [ngClass]="currentTheme == 'dark' ? 'bi bi-moon' : 'bi bi-brightness-high'"></i>
         </div>

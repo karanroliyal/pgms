@@ -125,3 +125,10 @@ td{
     padding-bottom : 4px  !important;
     vertical-align: middle;
 }
+label{
+    font-size: 12px !important;
+    margin-bottom: 2px !important;
+}
+.user-selection-none{
+    user-select: none;
+}
