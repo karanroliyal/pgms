@@ -69,10 +69,15 @@
             <thead class="cursor-pointer user-selection-none">
                 <tr>
                     <th>Sno.</th>
-                    <th (click)="sortingTable('name')">Name <i class="bi bi-arrow-up-short"
-                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'ASC'}"></i>
+                    <th (click)="sortingTable('name')" >Name <i class="bi bi-arrow-up-short"
+                            [ngClass]="{'d-none': sortColumn === 'name' && sortOrder === 'ASC'}"></i>
                         <i class="bi bi-arrow-down-short"
-                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'DESC'}"></i>
+                            [ngClass]="{'d-none': sortColumn === 'name' && sortOrder === 'DESC'}"></i>
+                    </th>
+                    <th (click)="sortingTable('total_rooms')" >Total rooms <i class="bi bi-arrow-up-short"
+                        [ngClass]="{'d-none': sortColumn === 'total_rooms' && sortOrder === 'ASC'}"></i>
+                    <i class="bi bi-arrow-down-short"
+                        [ngClass]="{'d-none': sortColumn === 'total_rooms' && sortOrder === 'DESC'}"></i>
                     </th>
                     <th>Address</th>
                     <th>State</th>
@@ -87,15 +92,16 @@
                 <tr>
                     <td>{{ (page - 1) * limit + i + 1 }}</td>
                     <td>{{items.name}}</td>
+                    <td>{{items.total_rooms}}</td>
                     <td>{{items.location}}</td>
-                    <td>{{items.state}}</td>
-                    <td>{{items.district}}</td>
+                    <td>{{ items.state | stateName: state_data }}</td>
+                    <td>{{getDistrictForView(items.district)}}</td>
                     <td>
                         <span class="badge bg-success" [ngClass]="items.status === 1 ? 'bg-success' : 'bg-danger'">{{
                             items.status === 1 ? 'Active' : 'Inactive' }}</span>
                     </td>
                     <td class="d-flex justify-content-center gap-2">
-                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editClient(items.id)"
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editProperty(items.id)"
                             class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
                         <button class="my-btn-size danger" (click)="deleteClient(items.id)"><i
                                 class="bi bi-trash"></i></button>
@@ -135,36 +141,22 @@
                                     fieldName="Name"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label>Email <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="email"
+                                <label>Total rooms <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="total_rooms">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="total_rooms"
+                                    fieldName="Total rooms"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Location <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="location"
                                     maxlength="50">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="email"
-                                    fieldName="Email"></app-form-validation-message>
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="location"
+                                    fieldName="Location"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label>Phone <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="phone"
-                                    maxlength="10">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="phone"
-                                    fieldName="Phone"></app-form-validation-message>
-                            </div>
-                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label> Password <span class="text-danger">*</span> </label>
-                                <input type="password" class="form-control form-control-sm" formControlName="password"
-                                    maxlength="15">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="password"
-                                    fieldName="Password"></app-form-validation-message>
-                            </div>
-                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label> Address <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="address">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="address"
-                                    fieldName="Address"></app-form-validation-message>
-                            </div>
-                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label> Pincode <span class="text-danger">*</span> </label>
+                                <label>Pincode <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="pincode"
-                                    maxlength="10">
+                                    maxlength="6">
                                 <app-form-validation-message [formGroup]="propertyForm" controlName="pincode"
                                     fieldName="Pincode"></app-form-validation-message>
                             </div>
@@ -200,13 +192,7 @@
                                 <app-form-validation-message [formGroup]="propertyForm" controlName="district"
                                     fieldName="district"></app-form-validation-message>
                             </div>
-                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label> Profile <span class="text-danger">*</span> </label>
-                                <input formControlName="profile" (change)="fileUpload($event, 'ownerProfile')"
-                                    type="file" class="form-control form-control-sm">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="profile"
-                                    fieldName="Profile"></app-form-validation-message>
-                            </div>
+                            
 
                         </div>
 
@@ -216,7 +202,7 @@
                 <div class="modal-footer">
                     <button type="button" (click)="this.propertyForm.reset()"
                         class="btn btn-sm btn-xsm btn-danger">reset</button>
-                    <button type="button" (click)="editMode? updateClient() :addClient()"
+                    <button type="button" (click)="editMode? updateProperty() :addProperty()"
                         class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Client' : 'Add Client'}}</button>
                 </div>
             </div>

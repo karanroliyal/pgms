@@ -25,12 +25,12 @@ export class GlobalService {
 
     toast.innerHTML = `
       <div class="d-flex align-items-center" style="width: 100%;">
-        <div class="toast-body">
+        <div class="toast-body fs-11">
           ${message}
         </div>
         <button 
           type="button" 
-          class="btn-close btn-close-white me-2 m-auto" 
+          class="btn-close btn-close-white me-2 m-auto btn btn-sm btn-xsm" 
           data-bs-dismiss="toast" 
           aria-label="Close">
         </button>

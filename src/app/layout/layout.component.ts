@@ -26,9 +26,7 @@ export class LayoutComponent implements  OnInit{
 
   checkViewport() {
     this.isMobileView = window.innerWidth <= 768;
-    console.log(this.isMobileView)
     if (this.isMobileView) {
-      console.log("Mobile")
       this.sidebarVisible = false;
     }else{
       this.sidebarVisible = true;
