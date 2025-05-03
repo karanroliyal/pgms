@@ -32,12 +32,12 @@
                       </a>
                     </li>
                   <li class="page-item"><a class="page-link fs-10" >{{page_no()}}</a></li>
-                  <li class="page-item" (click)="next()" [class.disabled]="page_no() == total_pages() || page_no() == 0">
+                  <li class="page-item" (click)="next()" [class.disabled]="page_no() == total_pages() || page_no() == 1 || page_no() == 0">
                     <a class="page-link fs-10" aria-label="Next">
                       <span aria-hidden="true">&rsaquo;</span>
                     </a>
                   </li>
-                  <li class="page-item" (click)="last()" [class.disabled]="page_no() == total_pages() || page_no() == 0">
+                  <li class="page-item" (click)="last()" [class.disabled]="page_no() == total_pages() || page_no() == 1 || page_no() == 0">
                     <a class="page-link fs-10" aria-label="Next">
                       <span aria-hidden="true">&raquo;</span>
                     </a>
