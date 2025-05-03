@@ -1,1 +1,227 @@
-<p>property works!</p>
+<div class="client-wrapper w-100 h-100 position-relative">
+
+    <div class="add-filter-container d-flex justify-content-end gap-2 position-relative mb-2">
+        <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i
+                class="bi bi-funnel"></i> Filter</button>
+        <button class="btn btn-sm btn-xsm btn-primary" (click)="openAddpropertyForm()" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"><i class="bi bi-people"></i> Add property</button>
+    </div>
+
+
+    <!-- Filter  -->
+
+    <div class="filter-conatiner card-theme-color rounded m-0 p-0 mb-2" [ngClass]="filterOption ? '' : 'd-none' ">
+        <form [formGroup]="filterForm" class="row mx-0 p-0 " (submit)="getTable()">
+
+            <div class="mb-2 col-md-2">
+                <label for="propertyNameId" class="form-label fs-10">Property name</label>
+                <input type="text" id="propertyNameId" class="form-control form-control-sm " formControlName="name"
+                    placeholder="Enter name">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="stateId" class="form-label fs-10" >State</label>
+                <select class="form-select form-select-sm" id="stateId" (change)="getDistrict(filter_state.value)" #filter_state  formControlName="state">
+                    <option value="">--select state--</option>
+                    @for (item of state_data; track $index) {
+                    <option [value]="item.state_id">{{ item.state_name }}</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="districtId" class="form-label fs-10">District</label>
+                <select class="form-select form-select-sm" id="districtId" formControlName="district">
+                    <option value="">--select district--</option>
+                    @for (item of district_data; track $index) {
+                    <option [value]="item.district_id">{{ item.district_name }}</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="statusId" class="form-label fs-10">Status</label>
+                <select class="form-select form-select-sm" id="statusId" formControlName="status">
+                    <option value="">select</option>
+                    <option selected value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </select>
+            </div>
+            <div class=" col-md-3 d-flex gap-2 mt-4">
+                <button type="submit" (click)="this.filterForm.get('page')?.setValue(1)" class="my-btn-size success"><i
+                        class="bi bi-search"></i> search</button>
+                <button type="button" class="my-btn-size danger " (click)="resetFilterForm()"><i class="bi bi-x"></i>
+                    reset</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Filter  -->
+
+    <!-- Paggination and limit component  -->
+    <app-pagination [formGroup]="filterForm" [limit]="limit" [total_pages]="total_pages" [page_no]="page"
+        [callback]="getTable.bind(this)"></app-pagination>
+    <!-- Paggination and limit component  -->
+
+    <!-- table  -->
+
+    <div class="table-wrapper  rounded">
+
+        <table class="table fs-10 ">
+            <thead class="cursor-pointer user-selection-none">
+                <tr>
+                    <th>Sno.</th>
+                    <th (click)="sortingTable('name')">Name <i class="bi bi-arrow-up-short"
+                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'ASC'}"></i>
+                        <i class="bi bi-arrow-down-short"
+                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'DESC'}"></i>
+                    </th>
+                    <th>Address</th>
+                    <th>State</th>
+                    <th>District</th>
+                    <th>Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(items of table_data ; track $index ; let i = $index){
+                <tr>
+                    <td>{{ (page - 1) * limit + i + 1 }}</td>
+                    <td>{{items.name}}</td>
+                    <td>{{items.location}}</td>
+                    <td>{{items.state}}</td>
+                    <td>{{items.district}}</td>
+                    <td>
+                        <span class="badge bg-success" [ngClass]="items.status === 1 ? 'bg-success' : 'bg-danger'">{{
+                            items.status === 1 ? 'Active' : 'Inactive' }}</span>
+                    </td>
+                    <td class="d-flex justify-content-center gap-2">
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editClient(items.id)"
+                            class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
+                        <button class="my-btn-size danger" (click)="deleteClient(items.id)"><i
+                                class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- table  -->
+
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Property' : 'Add Property'}}
+                    </h5>
+                    <button type="button" #modelClose class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form [formGroup]="propertyForm">
+
+                        <div class="row mx-0 p-0">
+
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Name <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="name"
+                                    maxlength="30">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="name"
+                                    fieldName="Name"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Email <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="email"
+                                    maxlength="50">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="email"
+                                    fieldName="Email"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Phone <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="phone"
+                                    maxlength="10">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="phone"
+                                    fieldName="Phone"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> Password <span class="text-danger">*</span> </label>
+                                <input type="password" class="form-control form-control-sm" formControlName="password"
+                                    maxlength="15">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="password"
+                                    fieldName="Password"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> Address <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="address">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="address"
+                                    fieldName="Address"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> Pincode <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="pincode"
+                                    maxlength="10">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="pincode"
+                                    fieldName="Pincode"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
+                                <label> Status <span class="text-danger">*</span> </label>
+                                <select formControlName="status" class="form-select form-select-sm">
+                                    <option value="1" selected>Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="status"
+                                    fieldName="Status"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> State <span class="text-danger">*</span> </label>
+                                <select formControlName="state" (change)="getDistrict(state_id.value)" #state_id
+                                    class="form-select form-select-sm">
+                                    <option value="">--select state--</option>
+                                    @for (item of state_data; track $index) {
+                                    <option [value]="item.state_id">{{ item.state_name }}</option>
+                                    }
+                                </select>
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="state"
+                                    fieldName="State"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> District <span class="text-danger">*</span> </label>
+                                <select formControlName="district" class="form-select form-select-sm">
+                                    <option value="">--select district--</option>
+                                    @for (item of district_data; track $index) {
+                                    <option [value]="item.district_id">{{ item.district_name }}</option>
+                                    }
+                                </select>
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="district"
+                                    fieldName="district"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> Profile <span class="text-danger">*</span> </label>
+                                <input formControlName="profile" (change)="fileUpload($event, 'ownerProfile')"
+                                    type="file" class="form-control form-control-sm">
+                                <app-form-validation-message [formGroup]="propertyForm" controlName="profile"
+                                    fieldName="Profile"></app-form-validation-message>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" (click)="this.propertyForm.reset()"
+                        class="btn btn-sm btn-xsm btn-danger">reset</button>
+                    <button type="button" (click)="editMode? updateClient() :addClient()"
+                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Client' : 'Add Client'}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Modal -->
+
+</div>
