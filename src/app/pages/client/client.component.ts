@@ -35,6 +35,7 @@ export class ClientComponent implements OnInit {
   page: number = 0
   limit: number = 0
   total_pages: number = 0
+  state_district_data:any
   state_data:  state[] |any
   district_data:  district[] |any
   editMode: boolean = false
@@ -160,30 +161,25 @@ export class ClientComponent implements OnInit {
     }
   }
 
-  getState(){
-    this.clientForm.get('district')?.setValue('')
+  getState() {
+    
     this.api.getState().subscribe(
-      (res:any)=>{
-          this.state_data = res.state
+      (res: any) => {
+        this.state_district_data = res
+        this.state_data = this.state_district_data.state
       },
-      (err:any)=>{
-        this.GF.showToast(err.error.message , 'danger')
+      (err: any) => {
+        this.GF.showToast(err.error.message, 'danger')
       }
     )
-    
+
   }
 
-  getDistrict(state_id:string){
-    this.district_data = []
+
+
+  getDistrict(state_id: string) {
     this.clientForm.get('district')?.setValue('')
-    this.api.getState().subscribe(
-      (res:any)=>{
-          this.district_data = res.district.filter((ele:any)=>{ return ele.state_id == state_id})
-      },
-      (err:any)=>{
-        this.GF.showToast(err.error.message , 'danger')
-      }
-    )
+        this.district_data = this.state_district_data.district.filter((ele: any) => { return ele.state_id == state_id })
   }
 
   // In your component class
@@ -282,6 +278,7 @@ export class ClientComponent implements OnInit {
   closeClientForm(){
     this.modelClose.nativeElement.click()
     this.clientForm.reset()
+    this.getTable()
   }
 
   openAddClientForm(){

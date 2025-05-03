@@ -68,9 +68,9 @@
                 <tr>
                     <th>Sno.</th>
                     <th (click)="sortingTable('name')">Name <i class="bi bi-arrow-up-short"
-                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'ASC'}"></i>
+                            [ngClass]="{'d-none': sortColumn === 'name' && sortOrder === 'ASC'}"></i>
                         <i class="bi bi-arrow-down-short"
-                            [ngClass]="{'d-none': sortColumn === 'user_name' && sortOrder === 'DESC'}"></i>
+                            [ngClass]="{'d-none': sortColumn === 'name' && sortOrder === 'DESC'}"></i>
                     </th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -151,7 +151,7 @@
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label > Pincode <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="pincode" maxlength="10">
+                                <input type="text" class="form-control form-control-sm" formControlName="pincode" maxlength="6">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="pincode"
                                         fieldName="Pincode"></app-form-validation-message>
                             </div>
