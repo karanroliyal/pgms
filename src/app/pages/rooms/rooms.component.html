@@ -15,8 +15,14 @@
 
             <div class="mb-2 col-md-2">
                 <label for="propertyNameId" class="form-label fs-10">Property name</label>
-                <input type="text" id="propertyNameId" class="form-control form-control-sm " formControlName="pg_name"
-                    placeholder="Enter pg name">
+                <select formControlName="pg_name" class="form-select form-select-sm" >
+                    <option value="">--select pg--</option>
+                    @for(items of property_data ; track $index){
+                        <option value="{{items.name}}" >{{items.name}}</option>
+                    }@empty{
+                        <option value="">no pg found</option>
+                    }
+                </select>
             </div>
             <div class="mb-2 col-md-2">
                 <label for="roomNumberId" class="form-label fs-10" >Room number</label>

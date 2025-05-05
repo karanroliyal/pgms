@@ -15,8 +15,16 @@
 
             <div class="mb-2 col-md-2">
                 <label for="propertyNameId" class="form-label fs-10">Property name</label>
-                <input type="text" id="propertyNameId" class="form-control form-control-sm " formControlName="name"
-                    placeholder="Enter name">
+                <!-- <input type="text" id="propertyNameId" class="form-control form-control-sm " formControlName="name"
+                    placeholder="Enter name"> -->
+                    <select formControlName="id" class="form-select form-select-sm"  >
+                        <option value="">--select pg--</option>
+                        @for(items of property_data ; track $index){
+                            <option value="{{items.id}}" >{{items.name}}</option>
+                        }@empty{
+                            <option value="">no pg found</option>
+                        }
+                    </select>
             </div>
             <div class="mb-2 col-md-2">
                 <label for="stateId" class="form-label fs-10" >State</label>
@@ -47,7 +55,7 @@
             <div class=" col-md-3 d-flex gap-2 mt-4">
                 <button type="submit" (click)="this.filterForm.get('page')?.setValue(1)" class="my-btn-size success"><i
                         class="bi bi-search"></i> search</button>
-                <button type="button" class="my-btn-size danger " (click)="resetFilterForm()"><i class="bi bi-x"></i>
+                <button type="button" class="my-btn-size danger"  (click)="resetFilterForm()"><i class="bi bi-x"></i>
                     reset</button>
             </div>
 

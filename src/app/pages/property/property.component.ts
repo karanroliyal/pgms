@@ -36,6 +36,7 @@ export class PropertyComponent implements OnInit {
   districtViewData: district[] | any
   editMode: boolean = false
   editPropertyId: string = ''
+  property_data: any
   @ViewChild('modelClose') modelClose!: ElementRef;
 
   constructor(private api: ApiService, private GF: GlobalService) { }
@@ -43,10 +44,11 @@ export class PropertyComponent implements OnInit {
   ngOnInit(): void {
     this.getTable()
     this.getState()
+    this.getPropertyData()
   }
 
   filterForm = new FormGroup({
-    name: new FormControl(''),
+    id: new FormControl(''),
     action: new FormControl('property'),
     district: new FormControl(''),
     state: new FormControl(''),
@@ -101,7 +103,7 @@ export class PropertyComponent implements OnInit {
       order: 'DESC',
       sort_by: 'id',
       page: 1,
-      name: '',
+      id: '',
       district: '',
     })
     this.getTable()
@@ -252,6 +254,21 @@ export class PropertyComponent implements OnInit {
   }
 
   
+  getPropertyData(){
 
+    this.api.postApi('property-data' , {}).subscribe(
+      (res:any)=>{
+        if(res.status){
+          this.property_data = res.data
+        }else{
+          this.GF.showToast(res.message , 'danger')
+        }
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
+
+  }
 
 }

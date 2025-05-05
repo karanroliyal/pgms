@@ -3,7 +3,8 @@
     <div class="add-filter-container d-flex justify-content-end gap-2 position-relative mb-2">
         <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i
                 class="bi bi-funnel"></i> Filter</button>
-        <button class="btn btn-sm btn-xsm btn-primary" (click)="openAddClientForm()" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="bi bi-people"></i> Add client</button>
+        <button class="btn btn-sm btn-xsm btn-primary" (click)="openAddClientForm()" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"><i class="bi bi-people"></i> Add client</button>
     </div>
 
 
@@ -44,7 +45,8 @@
                 </div>
             </div>
             <div class="mb-2 col-md-3 d-flex gap-2">
-                <button type="submit" (click)="this.filterForm.get('page')?.setValue(1)" class="my-btn-size success"><i class="bi bi-search"></i> search</button>
+                <button type="submit" (click)="this.filterForm.get('page')?.setValue(1)" class="my-btn-size success"><i
+                        class="bi bi-search"></i> search</button>
                 <button type="button" class="my-btn-size danger " (click)="resetFilterForm()"><i class="bi bi-x"></i>
                     reset</button>
             </div>
@@ -91,10 +93,13 @@
                             items.status === 1 ? 'Active' : 'Inactive' }}</span>
                     </td>
                     <td class="d-flex justify-content-center gap-2">
-                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editClient(items.id)" class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
-                        <button class="my-btn-size danger" (click)="deleteClient(items.id)"><i class="bi bi-trash"></i></button>
-                    <button class="my-btn-size bg-success"><i class="bi bi-whatsapp"></i></button>
-
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editClient(items.id)"
+                            class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
+                        <button class="my-btn-size danger" (click)="deleteClient(items.id)"><i
+                                class="bi bi-trash"></i></button>
+                        <a href="https://wa.me/{{items.phone}}" target="_blank">
+                            <button class="my-btn-size bg-success"><i class="bi bi-whatsapp"></i></button>
+                        </a>
                     </td>
                 </tr>
                 }
@@ -112,97 +117,107 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Client' : 'Add Client'}}</h5>
-                    <button type="button" #modelClose class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" #modelClose class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    
+
 
                     <form [formGroup]="clientForm">
 
                         <div class="row mx-0 p-0">
 
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label >Name <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="name" maxlength="30">
+                                <label>Name <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="name"
+                                    maxlength="30">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="name"
-                                        fieldName="Name"></app-form-validation-message>
+                                    fieldName="Name"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label >Email  <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="email" maxlength="50">
+                                <label>Email <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="email"
+                                    maxlength="50">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="email"
-                                        fieldName="Email"></app-form-validation-message>
+                                    fieldName="Email"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label >Phone  <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="phone" maxlength="10">
+                                <label>Phone <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="phone"
+                                    maxlength="10">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="phone"
-                                        fieldName="Phone"></app-form-validation-message>
+                                    fieldName="Phone"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label > Password  <span class="text-danger">*</span> </label>
-                                <input type="password" class="form-control form-control-sm" formControlName="password" maxlength="15">
+                                <label> Password <span class="text-danger">*</span> </label>
+                                <input type="password" class="form-control form-control-sm" formControlName="password"
+                                    maxlength="15">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="password"
-                                        fieldName="Password"></app-form-validation-message>
+                                    fieldName="Password"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label > Address <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="address" >
+                                <label> Address <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="address">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="address"
-                                        fieldName="Address"></app-form-validation-message>
+                                    fieldName="Address"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label > Pincode <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="pincode" maxlength="6">
+                                <label> Pincode <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="pincode"
+                                    maxlength="6">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="pincode"
-                                        fieldName="Pincode"></app-form-validation-message>
+                                    fieldName="Pincode"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
-                                <label > Status <span class="text-danger">*</span> </label>
-                                <select formControlName="status" class="form-select form-select-sm"  >
+                                <label> Status <span class="text-danger">*</span> </label>
+                                <select formControlName="status" class="form-select form-select-sm">
                                     <option value="1" selected>Active</option>
-                                    <option value="0" >Inactive</option>
+                                    <option value="0">Inactive</option>
                                 </select>
                                 <app-form-validation-message [formGroup]="clientForm" controlName="status"
-                                        fieldName="Status"></app-form-validation-message>
+                                    fieldName="Status"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label > State <span class="text-danger">*</span> </label>
-                                <select formControlName="state"  (change)="getDistrict(state_id.value)" #state_id class="form-select form-select-sm" >
+                                <label> State <span class="text-danger">*</span> </label>
+                                <select formControlName="state" (change)="getDistrict(state_id.value)" #state_id
+                                    class="form-select form-select-sm">
                                     <option value="">--select state--</option>
                                     @for (item of state_data; track $index) {
-                                        <option [value]="item.state_id">{{ item.state_name }}</option>
-                                      }
+                                    <option [value]="item.state_id">{{ item.state_name }}</option>
+                                    }
                                 </select>
                                 <app-form-validation-message [formGroup]="clientForm" controlName="state"
-                                        fieldName="State"></app-form-validation-message>
+                                    fieldName="State"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label > District <span class="text-danger">*</span> </label>
-                                <select formControlName="district" class="form-select form-select-sm" >
+                                <label> District <span class="text-danger">*</span> </label>
+                                <select formControlName="district" class="form-select form-select-sm">
                                     <option value="">--select district--</option>
                                     @for (item of district_data; track $index) {
-                                        <option [value]="item.district_id">{{ item.district_name }}</option>
-                                      }
+                                    <option [value]="item.district_id">{{ item.district_name }}</option>
+                                    }
                                 </select>
                                 <app-form-validation-message [formGroup]="clientForm" controlName="district"
-                                        fieldName="district"></app-form-validation-message>
+                                    fieldName="district"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label > Profile <span class="text-danger">*</span> </label>
-                                <input formControlName="profile" (change)="fileUpload($event, 'ownerProfile')" type="file" class="form-control form-control-sm" >
+                                <label> Profile <span class="text-danger">*</span> </label>
+                                <input formControlName="profile" (change)="fileUpload($event, 'ownerProfile')"
+                                    type="file" class="form-control form-control-sm">
                                 <app-form-validation-message [formGroup]="clientForm" controlName="profile"
-                                        fieldName="Profile"></app-form-validation-message>
+                                    fieldName="Profile"></app-form-validation-message>
                             </div>
-                      
+
                         </div>
 
                     </form>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" (click)="this.clientForm.reset()" class="btn btn-sm btn-xsm btn-danger">reset</button>
-                    <button type="button" (click)="editMode? updateClient() :addClient()" class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Client' : 'Add Client'}}</button>
+                    <button type="button" (click)="this.clientForm.reset()"
+                        class="btn btn-sm btn-xsm btn-danger">reset</button>
+                    <button type="button" (click)="editMode? updateClient() :addClient()"
+                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Client' : 'Add Client'}}</button>
                 </div>
             </div>
         </div>
