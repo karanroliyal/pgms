@@ -1,5 +1,6 @@
 .login-container {
     min-height: 100vh;
+    user-select: none;
   }
   
   .login-card {

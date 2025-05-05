@@ -24,7 +24,7 @@
 .pages {
   flex: 1;
   overflow-y: auto;
-  width: calc(100% -200px);
+  width: calc(100% - 200px);
   height: 100%;
 }
 
