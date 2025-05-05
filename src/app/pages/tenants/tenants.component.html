@@ -102,8 +102,8 @@
                     <td>{{items.name}}</td>
                     <td>{{items.total_rooms}}</td>
                     <td>{{items.location}}</td>
-                    <td>{{ items.state | stateName: state_data }}</td>
-                    <td>{{getDistrictForView(items.district)}}</td>
+                   
+                   
                     <td>
                         <span class="badge bg-success" [ngClass]="items.status === 1 ? 'bg-success' : 'bg-danger'">{{
                             items.status === 1 ? 'Active' : 'Inactive' }}</span>
