@@ -1,12 +1,12 @@
 <div class="container-fluid login-container d-flex flex-column flex-md-row p-0 vh-100">
     <!-- Left: Image Section -->
     <div class="d-none d-md-flex col-md-6 p-0">
-        <img src="assets/images/login2.jpg" class="img-fluid  w-100 " alt="Login Image" />
+        <img src="../../../assets/images/log-6.avif" class="img-fluid   " alt="Login Image" />
     </div>
 
     <!-- Right: Login Form -->
     <div class="form-wrapper col-12 col-md-6 d-flex align-items-center justify-content-center px-4 py-5">
-        <div class="card shadow-sm p-4 login-card w-100">
+        <div class="card shadow-lg p-3 mb-5 bg-white rounded login-card w-50">
             <div class="mb-3 text-center">
                 <img src="../../../assets/images/logo.avif" width="100px" alt="">
             </div>
@@ -14,19 +14,19 @@
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                 <div class="mb-3">
                     <label for="email" class="form-label">Email </label>
-                    <input id="email" type="email" class="form-control" formControlName="email"
+                    <input id="email" type="email" class="form-control fs-12" formControlName="email"
                         [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" />
                     <div class="invalid-feedback">Valid email required</div>
                 </div>
 
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input id="password" type="password" class="form-control" formControlName="password"
+                    <input id="password" type="password" class="form-control fs-12" formControlName="password"
                         [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" />
                     <div class="invalid-feedback">Password required</div>
                 </div>
 
-                <button class="btn w-100 login-btn" type="submit" [disabled]="loginForm.invalid">Log in</button>
+                <button class="btn w-100 login-btn fs-12" type="submit" [disabled]="loginForm.invalid">Log in</button>
             </form>
 
 
