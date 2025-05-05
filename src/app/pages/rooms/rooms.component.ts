@@ -16,15 +16,16 @@ interface district {
   district_name: string
 }
 
-@Component({
-  selector: 'app-property',
-  imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent, StateNamePipe],
-  templateUrl: './property.component.html',
-  styleUrl: './property.component.css'
-})
-export class PropertyComponent implements OnInit {
 
-  filterOption: boolean = false
+@Component({
+  selector: 'app-rooms',
+  imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent, StateNamePipe],
+  templateUrl: './rooms.component.html',
+  styleUrl: './rooms.component.css'
+})
+export class RoomsComponent {
+
+ filterOption: boolean = false
   table_data: any
   total_records: number = 0
   page: number = 0
@@ -35,36 +36,34 @@ export class PropertyComponent implements OnInit {
   district_data: district[] | any
   districtViewData: district[] | any
   editMode: boolean = false
-  editPropertyId: string = ''
+  editRoomId: string = ''
+  property_data: any
   @ViewChild('modelClose') modelClose!: ElementRef;
 
   constructor(private api: ApiService, private GF: GlobalService) { }
 
   ngOnInit(): void {
     this.getTable()
-    this.getState()
+    this.getPropertyData()
   }
 
   filterForm = new FormGroup({
-    name: new FormControl(''),
-    action: new FormControl('property'),
-    district: new FormControl(''),
-    state: new FormControl(''),
+    pg_name: new FormControl(''),
+    action: new FormControl('rooms'),
     status: new FormControl(''),
     limit: new FormControl(10),
     order: new FormControl("DESC"),
     sort_by: new FormControl('id'),
     page: new FormControl(1),
+    room_number: new FormControl(''),
+    type: new FormControl('')
   })
 
-  propertyForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
-    state: new FormControl('', [Validators.required]),
-    location: new FormControl(''),
-    district: new FormControl('', [Validators.required]),
+  roomForm = new FormGroup({
+    room_number: new FormControl('', [Validators.required, Validators.maxLength(10)]),
+    type: new FormControl('1', [Validators.required , Validators.pattern(/^[0-9]+$/)]),
+    property_id: new FormControl('', [Validators.required , Validators.pattern(/^[0-9]+$/)]),
     status: new FormControl('', Validators.required),
-    pincode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
-    total_rooms: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]+$/)]),
     id: new FormControl('')
   })
 
@@ -73,7 +72,7 @@ export class PropertyComponent implements OnInit {
   }
 
   getTable() {
-    this.api.postApi('property-table', this.filterForm.value).subscribe(
+    this.api.postApi('room-table', this.filterForm.value).subscribe(
       (res: any) => {
         if (res.status) {
           this.limit = res.limit
@@ -96,13 +95,13 @@ export class PropertyComponent implements OnInit {
     this.GF.preserveField(this.filterForm, ['action', 'limit', 'sort'], null)
     this.filterForm.patchValue({
       status: '',
-      state: '',
       limit: 10,
       order: 'DESC',
       sort_by: 'id',
       page: 1,
-      name: '',
-      district: '',
+      pg_name: '',
+      room_number: '',
+      type: ''
     })
     this.getTable()
   }
@@ -123,19 +122,19 @@ export class PropertyComponent implements OnInit {
     this.getTable();
   }
 
-  addProperty() {
-    this.propertyForm.markAllAsTouched();
+  addRoom() {
+    this.roomForm.markAllAsTouched();
 
     const formData = {
-      ...this.propertyForm.value,
+      ...this.roomForm.value,
     };
 
-    if (this.propertyForm.valid) {
-      this.api.postApi('add-pg-property', formData).subscribe(
+    if (this.roomForm.valid) {
+      this.api.postApi('add-pg-room', formData).subscribe(
         (res: any) => {
           if (res.status) {
             this.GF.showToast(res.message, 'success')
-            this.closepropertyForm()
+            this.closeroomForm()
             this.getTable()
           } else {
             this.GF.showToast(res.message, 'danger')
@@ -148,31 +147,9 @@ export class PropertyComponent implements OnInit {
     }
   }
 
-  getState() {
-    
-    this.api.getState().subscribe(
-      (res: any) => {
-        this.state_district_data = res
-        this.state_data = this.state_district_data.state
-      },
-      (err: any) => {
-        this.GF.showToast(err.error.message, 'danger')
-      }
-    )
 
-  }
 
-  getDistrictForView(district_id:string):string{
-        return this.state_district_data.district.filter((ele: any) => { return ele.district_id == district_id})[0].district_name
-  }
-
-  getDistrict(state_id: string) {
-    this.propertyForm.get('district')?.setValue('')
-    this.filterForm.get('district')?.setValue('')
-        this.district_data = this.state_district_data.district.filter((ele: any) => { return ele.state_id == state_id })
-  }
-
-  deleteProperty(clinetId: string) {
+  deleteRoom(clinetId: string) {
     this.api.postApi('delete', { action: 'property', id: clinetId }).subscribe(
       (res: any) => {
         if (res.status) {
@@ -188,21 +165,15 @@ export class PropertyComponent implements OnInit {
     )
   }
 
-  editProperty(clientId: string) {
-    this.propertyForm.markAsUntouched()
+  editRoom(clientId: string) {
+    this.roomForm.markAsUntouched()
     this.editMode = true
-    this.api.postApi('get-list', { action: 'property', id: clientId }).subscribe(
+    this.api.postApi('get-list', { action: 'room', id: clientId }).subscribe(
       (res: any) => {
         if (res.status) {
-          this.editPropertyId = res.data.id
-          delete res.data['profile']
-          delete res.data['password']
+          this.editRoomId = res.data.id
           delete res.data['id']
-          this.propertyForm.patchValue(res.data);
-          setTimeout(() => {
-            this.getDistrict(res.data.state)
-            this.propertyForm.get('district')?.setValue(res.data.district)
-          }, 200)
+          this.roomForm.patchValue(res.data);
         } else {
           this.GF.showToast(res.message, 'danger')
         }
@@ -214,19 +185,19 @@ export class PropertyComponent implements OnInit {
   }
 
   updateProperty() {
-    this.propertyForm.markAllAsTouched();
+    this.roomForm.markAllAsTouched();
 
     const formData = {
-      ...this.propertyForm.value,
-      id: this.editPropertyId
+      ...this.roomForm.value,
+      id: this.editRoomId
     };
 
-    if (this.propertyForm.valid) {
-      this.api.postApi('update-pg-property', formData).subscribe(
+    if (this.roomForm.valid) {
+      this.api.postApi('update-pg-room', formData).subscribe(
         (res: any) => {
           if (res.status) {
             this.GF.showToast(res.message, 'success')
-            this.closepropertyForm()
+            this.closeroomForm()
           } else {
             this.GF.showToast(res.message, 'danger')
           }
@@ -238,20 +209,35 @@ export class PropertyComponent implements OnInit {
     }
   }
 
-  closepropertyForm() {
+  closeroomForm() {
     this.modelClose.nativeElement.click()
-    this.propertyForm.reset()
+    this.roomForm.reset()
     this.getTable()
   }
 
-  openAddpropertyForm() {
-    this.propertyForm.reset()
-    this.propertyForm.markAsUntouched()
+  openaddRoomForm() {
+    this.roomForm.reset()
+    this.roomForm.markAsUntouched()
     this.editMode = false;
     this.district_data = []
   }
 
-  
+  getPropertyData(){
+
+    this.api.postApi('property-data' , {}).subscribe(
+      (res:any)=>{
+        if(res.status){
+          this.property_data = res.data
+        }else{
+          this.GF.showToast(res.message , 'danger')
+        }
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
+
+  }
 
 
 }

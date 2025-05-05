@@ -30,6 +30,11 @@ export const routes: Routes = [
                 path: 'property-master',
                 title: 'Property',
                 loadComponent: () => import('./pages/property/property.component').then(m=>m.PropertyComponent)
+            },
+            {
+                path:'rooms',
+                title: 'Rooms',
+                loadComponent: ()=>import('./pages/rooms/rooms.component').then(m=>m.RoomsComponent)
             }
         ]
     },

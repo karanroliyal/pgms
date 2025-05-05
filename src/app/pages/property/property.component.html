@@ -103,7 +103,7 @@
                     <td class="d-flex justify-content-center gap-2">
                         <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editProperty(items.id)"
                             class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
-                        <button class="my-btn-size danger" (click)="deleteClient(items.id)"><i
+                        <button class="my-btn-size danger" (click)="deleteProperty(items.id)"><i
                                 class="bi bi-trash"></i></button>
                     </td>
                 </tr>
@@ -203,7 +203,7 @@
                     <button type="button" (click)="this.propertyForm.reset()"
                         class="btn btn-sm btn-xsm btn-danger">reset</button>
                     <button type="button" (click)="editMode? updateProperty() :addProperty()"
-                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Client' : 'Add Client'}}</button>
+                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Property' : 'Add Property'}}</button>
                 </div>
             </div>
         </div>
