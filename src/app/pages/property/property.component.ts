@@ -62,7 +62,7 @@ export class PropertyComponent implements OnInit {
   propertyForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
     state: new FormControl('', [Validators.required]),
-    location: new FormControl(''),
+    location: new FormControl('', [Validators.required , Validators.maxLength(100) , Validators.minLength(3)]),
     district: new FormControl('', [Validators.required]),
     status: new FormControl('', Validators.required),
     pincode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
@@ -178,7 +178,7 @@ export class PropertyComponent implements OnInit {
     this.api.postApi('delete', { action: 'property', id: clinetId }).subscribe(
       (res: any) => {
         if (res.status) {
-          this.GF.showToast('Client deleted successfully', 'success')
+          this.GF.showToast('Property deleted successfully', 'success')
           this.getTable()
         } else {
           this.GF.showToast(res.message, 'danger')

@@ -153,7 +153,7 @@ export class RoomsComponent {
     this.api.postApi('delete', { action: 'property', id: clinetId }).subscribe(
       (res: any) => {
         if (res.status) {
-          this.GF.showToast('Client deleted successfully', 'success')
+          this.GF.showToast('Room deleted successfully', 'success')
           this.getTable()
         } else {
           this.GF.showToast(res.message, 'danger')

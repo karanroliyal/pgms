@@ -3,7 +3,7 @@
     <div class="add-filter-container d-flex justify-content-end gap-2 position-relative mb-2">
         <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i
                 class="bi bi-funnel"></i> Filter</button>
-        <button class="btn btn-sm btn-xsm btn-primary" (click)="openAddpropertyForm()" data-bs-toggle="modal"
+        <button class="btn btn-sm btn-xsm btn-primary" (click)="openADDForm()" data-bs-toggle="modal"
             data-bs-target="#exampleModal"><i class="bi bi-people"></i> Add property</button>
     </div>
 
@@ -15,9 +15,7 @@
 
             <div class="mb-2 col-md-2">
                 <label for="propertyNameId" class="form-label fs-10">Property name</label>
-                <!-- <input type="text" id="propertyNameId" class="form-control form-control-sm " formControlName="name"
-                    placeholder="Enter name"> -->
-                    <select formControlName="id" class="form-select form-select-sm"  >
+                    <select formControlName="pg_id" class="form-select form-select-sm"  >
                         <option value="">--select pg--</option>
                         @for(items of property_data ; track $index){
                             <option value="{{items.id}}" >{{items.name}}</option>
@@ -99,9 +97,17 @@
                 @for(items of table_data ; track $index ; let i = $index){
                 <tr>
                     <td>{{ (page - 1) * limit + i + 1 }}</td>
-                    <td>{{items.name}}</td>
-                    <td>{{items.total_rooms}}</td>
-                    <td>{{items.location}}</td>
+                    <td>{{items.pg_name}}</td>
+                    <td>{{items.tenant_name}}</td>
+                    <td>{{items.phone}}</td>
+                    <td>{{items.gender}}</td>
+                    <td>{{items.email}}</td>
+                    <td>{{items.address}}</td>
+                    <td>{{items.emergengy_contact}}</td>
+                    <td>{{items.parent_contact}}</td>
+                    <td>{{items.dob}}</td>
+                    <td>{{items.room_number}}</td>
+                    <td>{{items.occupation}}</td>
                     <td>{{ items.state | stateName: state_data }}</td>
                     <td>{{getDistrictForView(items.district)}}</td>
                     <td>
@@ -109,9 +115,9 @@
                             items.status === 1 ? 'Active' : 'Inactive' }}</span>
                     </td>
                     <td class="d-flex justify-content-center gap-2">
-                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="editProperty(items.id)"
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" (click)="EDIT(items.id)"
                             class="my-btn-size primary"><i class="bi bi-pencil"></i></button>
-                        <button class="my-btn-size danger" (click)="deleteProperty(items.id)"><i
+                        <button class="my-btn-size danger" (click)="DELETE(items.id)"><i
                                 class="bi bi-trash"></i></button>
                     </td>
                 </tr>
@@ -137,7 +143,7 @@
                 <div class="modal-body">
 
 
-                    <form [formGroup]="propertyForm">
+                    <form [formGroup]="dataForm">
 
                         <div class="row mx-0 p-0">
 
@@ -145,27 +151,27 @@
                                 <label>Name <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="name"
                                     maxlength="30">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="name"
+                                <app-form-validation-message [formGroup]="dataForm" controlName="name"
                                     fieldName="Name"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label>Total rooms <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="total_rooms">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="total_rooms"
+                                <app-form-validation-message [formGroup]="dataForm" controlName="total_rooms"
                                     fieldName="Total rooms"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label>Location <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="location"
-                                    maxlength="100">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="location"
+                                    maxlength="50">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="location"
                                     fieldName="Location"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label>Pincode <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="pincode"
                                     maxlength="6">
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="pincode"
+                                <app-form-validation-message [formGroup]="dataForm" controlName="pincode"
                                     fieldName="Pincode"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
@@ -174,7 +180,7 @@
                                     <option value="1" selected>Active</option>
                                     <option value="0">Inactive</option>
                                 </select>
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="status"
+                                <app-form-validation-message [formGroup]="dataForm" controlName="status"
                                     fieldName="Status"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
@@ -186,7 +192,7 @@
                                     <option [value]="item.state_id">{{ item.state_name }}</option>
                                     }
                                 </select>
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="state"
+                                <app-form-validation-message [formGroup]="dataForm" controlName="state"
                                     fieldName="State"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
@@ -197,7 +203,7 @@
                                     <option [value]="item.district_id">{{ item.district_name }}</option>
                                     }
                                 </select>
-                                <app-form-validation-message [formGroup]="propertyForm" controlName="district"
+                                <app-form-validation-message [formGroup]="dataForm" controlName="district"
                                     fieldName="district"></app-form-validation-message>
                             </div>
                             
@@ -208,9 +214,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" (click)="this.propertyForm.reset()"
+                    <button type="button" (click)="this.dataForm.reset()"
                         class="btn btn-sm btn-xsm btn-danger">reset</button>
-                    <button type="button" (click)="editMode? updateProperty() :addProperty()"
+                    <button type="button" (click)="editMode? UPDATE() :ADD()"
                         class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Property' : 'Add Property'}}</button>
                 </div>
             </div>
