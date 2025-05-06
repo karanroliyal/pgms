@@ -35,7 +35,8 @@ export const routes: Routes = [
                 path:'rooms',
                 title: 'Rooms',
                 loadComponent: ()=>import('./pages/rooms/rooms.component').then(m=>m.RoomsComponent)
-            }
+            },
+           
         ]
     },
 
