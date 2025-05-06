@@ -102,8 +102,8 @@
                     <td>{{items.name}}</td>
                     <td>{{items.total_rooms}}</td>
                     <td>{{items.location}}</td>
-                    <td>{{ items.state | stateName: state_data }}</td>
-                    <td>{{getDistrictForView(items.district)}}</td>
+                   
+                   
                     <td>
                         <span class="badge bg-success" [ngClass]="items.status === 1 ? 'bg-success' : 'bg-danger'">{{
                             items.status === 1 ? 'Active' : 'Inactive' }}</span>
@@ -157,7 +157,7 @@
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
                                 <label>Location <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="location"
-                                    maxlength="100">
+                                    maxlength="50">
                                 <app-form-validation-message [formGroup]="propertyForm" controlName="location"
                                     fieldName="Location"></app-form-validation-message>
                             </div>

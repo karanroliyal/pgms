@@ -17,12 +17,14 @@ interface district {
 }
 
 @Component({
-  selector: 'app-property',
+  selector: 'app-tenants',
   imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent, StateNamePipe],
-  templateUrl: './property.component.html',
-  styleUrl: './property.component.css'
+
+  templateUrl: './tenants.component.html',
+  styleUrl: './tenants.component.css'
 })
-export class PropertyComponent implements OnInit {
+export class TenantsComponent {
+
 
   filterOption: boolean = false
   table_data: any
@@ -43,7 +45,6 @@ export class PropertyComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTable()
-    this.getState()
     this.getPropertyData()
   }
 
@@ -62,7 +63,7 @@ export class PropertyComponent implements OnInit {
   propertyForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
     state: new FormControl('', [Validators.required]),
-    location: new FormControl('', [Validators.required , Validators.maxLength(100) , Validators.minLength(3)]),
+    location: new FormControl(''),
     district: new FormControl('', [Validators.required]),
     status: new FormControl('', Validators.required),
     pincode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
@@ -73,6 +74,24 @@ export class PropertyComponent implements OnInit {
   filterSearch() {
     this.filterForm.get('page')?.setValue(1)
   }
+
+
+
+  
+  closepropertyForm() {
+    this.modelClose.nativeElement.click()
+    this.propertyForm.reset()
+    this.getTable()
+  }
+
+  openAddpropertyForm() {
+    this.propertyForm.reset()
+    this.propertyForm.markAsUntouched()
+    this.editMode = false;
+    this.district_data = []
+  }
+
+
 
   getTable() {
     this.api.postApi('property-table', this.filterForm.value).subscribe(
@@ -93,37 +112,24 @@ export class PropertyComponent implements OnInit {
     )
   }
 
-  resetFilterForm() {
-    this.filterForm.get('page')?.setValue(1)
-    this.GF.preserveField(this.filterForm, ['action', 'limit', 'sort'], null)
-    this.filterForm.patchValue({
-      status: '',
-      state: '',
-      limit: 10,
-      order: 'DESC',
-      sort_by: 'id',
-      page: 1,
-      id: '',
-      district: '',
-    })
-    this.getTable()
-  }
 
-  // table shorting 
-  sortColumn: string = '';
-  sortOrder: 'ASC' | 'DESC' = 'DESC';
 
-  sortingTable(sortOn: string) {
-    if (this.sortColumn === sortOn) {
-      this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
-    } else {
-      this.sortColumn = sortOn;
-      this.sortOrder = 'ASC';
+
+    // table shorting 
+    sortColumn: string = '';
+    sortOrder: 'ASC' | 'DESC' = 'DESC';
+  
+    sortingTable(sortOn: string) {
+      if (this.sortColumn === sortOn) {
+        this.sortOrder = this.sortOrder === 'ASC' ? 'DESC' : 'ASC';
+      } else {
+        this.sortColumn = sortOn;
+        this.sortOrder = 'ASC';
+      }
+      this.filterForm.controls['order'].setValue(this.sortOrder);
+      this.filterForm.controls['sort_by'].setValue(sortOn);
+      this.getTable();
     }
-    this.filterForm.controls['order'].setValue(this.sortOrder);
-    this.filterForm.controls['sort_by'].setValue(sortOn);
-    this.getTable();
-  }
 
   add() {
     this.propertyForm.markAllAsTouched();
@@ -150,110 +156,7 @@ export class PropertyComponent implements OnInit {
     }
   }
 
-  getState() {
-    
-    this.api.getState().subscribe(
-      (res: any) => {
-        this.state_district_data = res
-        this.state_data = this.state_district_data.state
-      },
-      (err: any) => {
-        this.GF.showToast(err.error.message, 'danger')
-      }
-    )
 
-  }
-
-  getDistrictForView(district_id:string):string{
-        return this.state_district_data.district.filter((ele: any) => { return ele.district_id == district_id})[0].district_name
-  }
-
-  getDistrict(state_id: string) {
-    this.propertyForm.get('district')?.setValue('')
-    this.filterForm.get('district')?.setValue('')
-        this.district_data = this.state_district_data.district.filter((ele: any) => { return ele.state_id == state_id })
-  }
-
-  delete(clinetId: string) {
-    this.api.postApi('delete', { action: 'property', id: clinetId }).subscribe(
-      (res: any) => {
-        if (res.status) {
-          this.GF.showToast('Property deleted successfully', 'success')
-          this.getTable()
-        } else {
-          this.GF.showToast(res.message, 'danger')
-        }
-      },
-      (err: any) => {
-        this.GF.showToast(err.error.message, 'danger')
-      }
-    )
-  }
-
-  edit(clientId: string) {
-    this.propertyForm.markAsUntouched()
-    this.editMode = true
-    this.api.postApi('get-list', { action: 'property', id: clientId }).subscribe(
-      (res: any) => {
-        if (res.status) {
-          this.editPropertyId = res.data.id
-          delete res.data['profile']
-          delete res.data['password']
-          delete res.data['id']
-          this.propertyForm.patchValue(res.data);
-          setTimeout(() => {
-            this.getDistrict(res.data.state)
-            this.propertyForm.get('district')?.setValue(res.data.district)
-          }, 200)
-        } else {
-          this.GF.showToast(res.message, 'danger')
-        }
-      },
-      (err: any) => {
-        this.GF.showToast(err.error.message, 'danger')
-      }
-    )
-  }
-
-  update() {
-    this.propertyForm.markAllAsTouched();
-
-    const formData = {
-      ...this.propertyForm.value,
-      id: this.editPropertyId
-    };
-
-    if (this.propertyForm.valid) {
-      this.api.postApi('update-pg-property', formData).subscribe(
-        (res: any) => {
-          if (res.status) {
-            this.GF.showToast(res.message, 'success')
-            this.closepropertyForm()
-          } else {
-            this.GF.showToast(res.message, 'danger')
-          }
-        },
-        (err: any) => {
-          this.GF.showToast(err.error.message, 'danger')
-        }
-      )
-    }
-  }
-
-  closepropertyForm() {
-    this.modelClose.nativeElement.click()
-    this.propertyForm.reset()
-    this.getTable()
-  }
-
-  openAddpropertyForm() {
-    this.propertyForm.reset()
-    this.propertyForm.markAsUntouched()
-    this.editMode = false;
-    this.district_data = []
-  }
-
-  
   getPropertyData(){
 
     this.api.postApi('property-data' , {}).subscribe(
@@ -271,4 +174,71 @@ export class PropertyComponent implements OnInit {
 
   }
 
+  edit(clientId: string) {
+    this.propertyForm.markAsUntouched()
+    this.editMode = true
+    this.api.postApi('get-list', { action: 'property', id: clientId }).subscribe(
+      (res: any) => {
+        if (res.status) {
+          this.editPropertyId = res.data.id
+          delete res.data['profile']
+          delete res.data['password']
+          delete res.data['id']
+          this.propertyForm.patchValue(res.data);
+        
+        } else {
+          this.GF.showToast(res.message, 'danger')
+        }
+      },
+      (err: any) => {
+        this.GF.showToast(err.error.message, 'danger')
+      }
+    )
+  }
+
+    update() {
+      this.propertyForm.markAllAsTouched();
+  
+      const formData = {
+        ...this.propertyForm.value,
+        id: this.editPropertyId
+      };
+  
+      if (this.propertyForm.valid) {
+        this.api.postApi('update-pg-property', formData).subscribe(
+          (res: any) => {
+            if (res.status) {
+              this.GF.showToast(res.message, 'success')
+              this.closepropertyForm()
+            } else {
+              this.GF.showToast(res.message, 'danger')
+            }
+          },
+          (err: any) => {
+            this.GF.showToast(err.error.message, 'danger')
+          }
+        )
+      }
+    
+  }
+
+
+
+
+
+  delete(clinetId: string) {
+    this.api.postApi('delete', { action: 'property', id: clinetId }).subscribe(
+      (res: any) => {
+        if (res.status) {
+          this.GF.showToast('Client deleted successfully', 'success')
+          this.getTable()
+        } else {
+          this.GF.showToast(res.message, 'danger')
+        }
+      },
+      (err: any) => {
+        this.GF.showToast(err.error.message, 'danger')
+      }
+    )
+  }
 }
