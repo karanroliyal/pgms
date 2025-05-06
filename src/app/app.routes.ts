@@ -36,7 +36,11 @@ export const routes: Routes = [
                 title: 'Rooms',
                 loadComponent: ()=>import('./pages/rooms/rooms.component').then(m=>m.RoomsComponent)
             },
-           
+            {
+                path:'tenant',
+                title:'Tenant',
+                loadComponent: ()=>import ('./pages/tenant/tenant.component').then(m=>m.TenantComponent)
+            }
         ]
     },
 

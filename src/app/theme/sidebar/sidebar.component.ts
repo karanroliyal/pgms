@@ -15,7 +15,7 @@ export class SidebarComponent {
     {menu:"client",icon_class:"bi bi-person", menu_url:"/client-master"},
     {menu:"Property",icon_class:"bi bi-people", menu_url:"/property-master"},
     {menu:"Rooms",icon_class:"bi bi-person-add", menu_url:"/rooms"},
-    {menu:"staff",icon_class:"bi bi-person-gear", menu_url:"/dashboard2"},
+    {menu:"Tenant",icon_class:"bi bi-person-gear", menu_url:"/tenant"},
     {menu:"setting",icon_class:"bi bi-gear", menu_url:"/dashboard2"},
   ]
 
