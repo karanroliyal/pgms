@@ -133,3 +133,9 @@ label{
 .user-selection-none{
     user-select: none;
 }
+.white-space, thead{
+    white-space: nowrap;
+}
+td{
+    white-space: nowrap;
+}

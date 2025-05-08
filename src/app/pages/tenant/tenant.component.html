@@ -50,6 +50,42 @@
                     <option value="0">Inactive</option>
                 </select>
             </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Tenant name</label>
+                <input type="text" class="form-control form-control-sm" formControlName="name" placeholder="search">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Email</label>
+                <input type="text" class="form-control form-control-sm" formControlName="email" placeholder="search">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Address</label>
+                <input type="text" class="form-control form-control-sm" formControlName="address" placeholder="search">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">DOB</label>
+                <input type="date" class="form-control form-control-sm" formControlName="dob" >
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Room number</label>
+                <input type="text" class="form-control form-control-sm" formControlName="room_number" placeholder="i.e 101, 201">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Occupation</label>
+                <input type="text" class="form-control form-control-sm" formControlName="occupation" placeholder="search">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Phone</label>
+                <input type="text" class="form-control form-control-sm" formControlName="occupation" placeholder="phone">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Emergency contact</label>
+                <input type="text" class="form-control form-control-sm" formControlName="emergency_contact" placeholder="search">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="tenantNameId" class="form-label fs-10">Phone contact</label>
+                <input type="text" class="form-control form-control-sm" formControlName="parent_contact" placeholder="search">
+            </div>
             <div class=" col-md-3 d-flex gap-2 mt-4">
                 <button type="submit" (click)="this.filterForm.get('page')?.setValue(1)" class="my-btn-size success"><i
                         class="bi bi-search"></i> search</button>
@@ -69,23 +105,26 @@
 
     <!-- table  -->
 
-    <div class="table-wrapper  rounded">
+    <div class="table-wrapper  rounded overflow-x-auto" >
 
         <table class="table fs-10 ">
-            <thead class="cursor-pointer user-selection-none">
+            <thead class="cursor-pointer user-selection-none white-space" >
                 <tr>
                     <th>Sno.</th>
-                    <th (click)="sortingTable('name')" >Name <i class="bi bi-arrow-up-short"
-                            [ngClass]="{'d-none': sortColumn === 'name' && sortOrder === 'ASC'}"></i>
-                        <i class="bi bi-arrow-down-short"
-                            [ngClass]="{'d-none': sortColumn === 'name' && sortOrder === 'DESC'}"></i>
-                    </th>
-                    <th (click)="sortingTable('total_rooms')" >Total rooms <i class="bi bi-arrow-up-short"
-                        [ngClass]="{'d-none': sortColumn === 'total_rooms' && sortOrder === 'ASC'}"></i>
-                    <i class="bi bi-arrow-down-short"
-                        [ngClass]="{'d-none': sortColumn === 'total_rooms' && sortOrder === 'DESC'}"></i>
-                    </th>
+                    <th>Pg name</th>
+                    <th>Profile</th>
+                    <th>Tenant name</th>
+                    <th>Phone</th>
+                    <th>Gender</th>
+                    <th>Email</th>
                     <th>Address</th>
+                    <th>Emergency contact</th>
+                    <th>Parent contact</th>
+                    <th>DOB</th>
+                    <th>Room number</th>
+                    <th>Aadhar card</th>
+                    <th>Pan card</th>
+                    <th>Occupation</th>
                     <th>State</th>
                     <th>District</th>
                     <th>Status</th>
@@ -98,15 +137,18 @@
                 <tr>
                     <td>{{ (page - 1) * limit + i + 1 }}</td>
                     <td>{{items.pg_name}}</td>
+                    <td>{{items.profile_photo}}</td>
                     <td>{{items.tenant_name}}</td>
                     <td>{{items.phone}}</td>
                     <td>{{items.gender}}</td>
                     <td>{{items.email}}</td>
                     <td>{{items.address}}</td>
-                    <td>{{items.emergengy_contact}}</td>
+                    <td>{{items.emergency_contact}}</td>
                     <td>{{items.parent_contact}}</td>
-                    <td>{{items.dob}}</td>
+                    <td>{{items.dob | date:'mediumDate'}}</td>
                     <td>{{items.room_number}}</td>
+                    <td>{{items.aadhar}}</td>
+                    <td>{{items.pan}}</td>
                     <td>{{items.occupation}}</td>
                     <td>{{ items.state | stateName: state_data }}</td>
                     <td>{{getDistrictForView(items.district)}}</td>
@@ -148,31 +190,117 @@
                         <div class="row mx-0 p-0">
 
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label>Name <span class="text-danger">*</span> </label>
+                                <label>Pg name <span class="text-danger">*</span> </label>
+                                <select formControlName="pg_id" class="form-select form-select-sm" >
+                                    <option value="">--select pg--</option>
+                                    @for(items of property_data ; track $index){
+                                        <option value="{{items.id}}" >{{items.name}}</option>
+                                    }@empty{
+                                        <option value="">no pg found</option>
+                                    }
+                                </select>
+                                <app-form-validation-message [formGroup]="dataForm" controlName="pg_id"
+                                    fieldName="Pg name"></app-form-validation-message>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Room number <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="room_id">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="room_id"
+                                    fieldName="Room number"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Tenant Name <span class="text-danger">*</span> </label>
                                 <input type="text" class="form-control form-control-sm" formControlName="name"
-                                    maxlength="30">
+                                    maxlength="30" >
                                 <app-form-validation-message [formGroup]="dataForm" controlName="name"
                                     fieldName="Name"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label>Total rooms <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="total_rooms">
-                                <app-form-validation-message [formGroup]="dataForm" controlName="total_rooms"
-                                    fieldName="Total rooms"></app-form-validation-message>
+                                <label>Tenant Phone <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="phone"
+                                    maxlength="10" >
+                                <app-form-validation-message [formGroup]="dataForm" controlName="phone"
+                                    fieldName="Phone number"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label>Location <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="location"
-                                    maxlength="50">
-                                <app-form-validation-message [formGroup]="dataForm" controlName="location"
-                                    fieldName="Location"></app-form-validation-message>
+                                <label>Tenant email <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="email"
+                                    maxlength="50" >
+                                <app-form-validation-message [formGroup]="dataForm" controlName="email"
+                                    fieldName="Email"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
-                                <label>Pincode <span class="text-danger">*</span> </label>
-                                <input type="text" class="form-control form-control-sm" formControlName="pincode"
-                                    maxlength="6">
-                                <app-form-validation-message [formGroup]="dataForm" controlName="pincode"
-                                    fieldName="Pincode"></app-form-validation-message>
+                                <label>Parent contact <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="parent_contact"
+                                    maxlength="10" >
+                                <app-form-validation-message [formGroup]="dataForm" controlName="parent_contact"
+                                    fieldName="Parent contact"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Emergency contact <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="emergency_contact"
+                                    maxlength="10" >
+                                <app-form-validation-message [formGroup]="dataForm" controlName="emergency_contact"
+                                    fieldName="Emergency contact"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Password <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="password"
+                                    maxlength="15" >
+                                <app-form-validation-message [formGroup]="dataForm" controlName="password"
+                                    fieldName="Password"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Gender <span class="text-danger">*</span> </label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input " type="radio" formControlName="gender" id="tenantGenderId1" value="male">
+                                    <label class="form-check-label" for="tenantGenderId1">Male</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="gender" id="tenantGenderId2" value="female">
+                                    <label class="form-check-label" for="tenantGenderId2">Female</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="gender" id="tenantGenderId3" value="other">
+                                    <label class="form-check-label" for="tenantGenderId3">other</label>
+                                  </div><br>
+
+                                <app-form-validation-message [formGroup]="dataForm" controlName="gender"
+                                    fieldName="Gender"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>DOB <span class="text-danger">*</span> </label>
+                                <input type="date" class="form-control form-control-sm" formControlName="dob">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="dob"
+                                    fieldName="DOB"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Occupation <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="occupation"
+                                    maxlength="70">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="occupation"
+                                    fieldName="Occupation"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Check in date <span class="text-danger">*</span> </label>
+                                <input type="date" class="form-control form-control-sm" formControlName="check_in_date">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="check_in_date"
+                                    fieldName="Check in date"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Rent status <span class="text-danger">*</span> </label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input " type="radio" formControlName="rent_status" id="tenantPaymentId1" value="pending">
+                                    <label class="form-check-label" for="tenantPaymentId1">Pending</label>
+                                  </div>
+                                  <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" formControlName="rent_status" id="tenantPaymentId2" value="paid">
+                                    <label class="form-check-label" for="tenantPaymentId2">Paid</label>
+                                  </div><br>
+
+                                <app-form-validation-message [formGroup]="dataForm" controlName="rent_status"
+                                    fieldName="Rent status"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
                                 <label> Status <span class="text-danger">*</span> </label>
