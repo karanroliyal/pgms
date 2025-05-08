@@ -111,12 +111,11 @@ export class TenantComponent {
       occupation: new FormControl('' , [Validators.required , Validators.minLength(3) , Validators.maxLength(70)]),
       check_in_date: new FormControl('' , [Validators.required ]),
       rent_status: new FormControl('' , [Validators.required, Validators.pattern(/^(pending|paid)$/) ]),
+      address: new FormControl('' , [Validators.required , Validators.maxLength(100)]),
       state: new FormControl('', [Validators.required ]),
-      location: new FormControl(''),
       district: new FormControl('', [Validators.required]),
       status: new FormControl('', Validators.required),
       pincode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
-      total_rooms: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]+$/)]),
       id: new FormControl(''),
       pg_id: new FormControl('', [Validators.required])
     })
@@ -163,13 +162,13 @@ export class TenantComponent {
   
     ADD() {
       this.dataForm.markAllAsTouched();
-  
+  console.log(this.dataForm.value)
       const formData = {
         ...this.dataForm.value,
       };
   
       if (this.dataForm.valid) {
-        this.api.postApi('add-pg-property', formData).subscribe(
+        this.api.postApi('add-tenant', formData).subscribe(
           (res: any) => {
             if (res.status) {
               this.GF.showToast(res.message, 'success')

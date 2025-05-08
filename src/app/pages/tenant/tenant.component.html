@@ -303,6 +303,12 @@
                                     fieldName="Rent status"></app-form-validation-message>
                             </div>
                             <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
+                                <label> Address <span class="text-danger">*</span> </label>
+                                <input type="text" formControlName="address" class="form-control form-control-sm">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="address"
+                                    fieldName="Address"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
                                 <label> Status <span class="text-danger">*</span> </label>
                                 <select formControlName="status" class="form-select form-select-sm">
                                     <option value="1" selected>Active</option>
@@ -333,6 +339,12 @@
                                 </select>
                                 <app-form-validation-message [formGroup]="dataForm" controlName="district"
                                     fieldName="district"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label> Pincode <span class="text-danger">*</span> </label>
+                                <input type="text" class="form-control form-control-sm" formControlName="pincode">
+                                <app-form-validation-message [formGroup]="dataForm" controlName="pincode"
+                                    fieldName="Pincode"></app-form-validation-message>
                             </div>
                             
 
