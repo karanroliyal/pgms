@@ -5,7 +5,6 @@ import { PaginationComponent } from '../../components/pagination/pagination.comp
 import { ApiService } from '../../services/api.service';
 import { GlobalService } from '../../services/global.service';
 import { FormValidationMessageComponent } from '../../components/form-validation-message/form-validation-message.component';
-import { RouterLink } from '@angular/router';
 
 interface state{
   state_id : string,
@@ -20,7 +19,7 @@ interface district{
 
 @Component({
   selector: 'app-client',
-  imports: [ReactiveFormsModule, CommonModule, PaginationComponent,FormValidationMessageComponent , RouterLink ],
+  imports: [ReactiveFormsModule, CommonModule, PaginationComponent,FormValidationMessageComponent  ],
   templateUrl: './client.component.html',
   styleUrl: './client.component.css'
 })
