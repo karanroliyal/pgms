@@ -5,7 +5,6 @@ import { PaginationComponent } from '../../components/pagination/pagination.comp
 import { ApiService } from '../../services/api.service';
 import { GlobalService } from '../../services/global.service';
 import { FormValidationMessageComponent } from '../../components/form-validation-message/form-validation-message.component';
-import { StateNamePipe } from '../../pipes/state-name.pipe';
 
 interface state {
   state_id: string,
@@ -19,7 +18,7 @@ interface district {
 
 @Component({
   selector: 'app-rooms',
-  imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent, StateNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent],
   templateUrl: './rooms.component.html',
   styleUrl: './rooms.component.css'
 })

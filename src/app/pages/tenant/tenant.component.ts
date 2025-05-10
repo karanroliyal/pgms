@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms'
 import { PaginationComponent } from '../../components/pagination/pagination.component';
@@ -18,7 +18,7 @@ interface district {
 
 @Component({
   selector: 'app-tenant',
-  imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent, StateNamePipe],
+  imports: [ReactiveFormsModule, CommonModule, PaginationComponent, FormValidationMessageComponent, StateNamePipe, DatePipe],
   templateUrl: './tenant.component.html',
   styleUrl: './tenant.component.css'
 })
@@ -47,6 +47,8 @@ export class TenantComponent {
       this.getState()
       this.getPropertyData()
     }
+
+
   
     filterForm = new FormGroup({
       pg_id: new FormControl(''),
@@ -58,17 +60,64 @@ export class TenantComponent {
       order: new FormControl("DESC"),
       sort_by: new FormControl('id'),
       page: new FormControl(1),
+      name: new FormControl(''),
+      email: new FormControl(''),
+      address: new FormControl(''),
+      dob: new FormControl(''),
+      room_number: new FormControl(''),
+      occupation: new FormControl(''),
+      phone: new FormControl(''),
+      emergency_contact: new FormControl(''),
+      parent_contact: new FormControl(''),
     })
+
+
+    resetFilterForm() {
+      this.filterForm.get('page')?.setValue(1)
+      this.GF.preserveField(this.filterForm, ['action', 'limit', 'sort'], null)
+      this.filterForm.patchValue({
+        status: '',
+        state: '',
+        limit: 10,
+        order: 'DESC',
+        sort_by: 'id',
+        page: 1,
+        pg_id: '',
+        district: '',
+        name:'',
+        email:'',
+        address:'',
+        dob:'',
+        room_number:'',
+        occupation:'',
+        phone:'',
+        emergency_contact:'',
+        parent_contact:'',
+      })
+      this.getTable()
+    }
+  
   
     dataForm = new FormGroup({
       name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
-      state: new FormControl('', [Validators.required]),
-      location: new FormControl(''),
+      room_id: new FormControl('',[Validators.required , Validators.pattern(/^[0-9]+$/)]),
+      phone: new FormControl('' , [Validators.required , Validators.maxLength(10) , Validators.minLength(10), Validators.pattern(/^[0-9]+$/)]),
+      email: new FormControl('' , [Validators.required , Validators.email , Validators.maxLength(50), Validators.minLength(3)]),
+      parent_contact: new FormControl('' , [Validators.required , Validators.maxLength(10) , Validators.minLength(10) , Validators.pattern(/^[0-9]+$/)]),
+      emergency_contact: new FormControl('' , [Validators.required , Validators.maxLength(10) , Validators.minLength(10) , Validators.pattern(/^[0-9]+$/)]),
+      password: new FormControl('', [Validators.required,Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).+$'), Validators.minLength(8), Validators.maxLength(15)]),
+      gender: new FormControl('', [Validators.required , Validators.pattern(/^(male|femail|other)$/)]),
+      dob: new FormControl('' , [Validators.required]),
+      occupation: new FormControl('' , [Validators.required , Validators.minLength(3) , Validators.maxLength(70)]),
+      check_in_date: new FormControl('' , [Validators.required ]),
+      rent_status: new FormControl('' , [Validators.required, Validators.pattern(/^(pending|paid)$/) ]),
+      address: new FormControl('' , [Validators.required , Validators.maxLength(100)]),
+      state: new FormControl('', [Validators.required ]),
       district: new FormControl('', [Validators.required]),
       status: new FormControl('', Validators.required),
       pincode: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]),
-      total_rooms: new FormControl('', [Validators.required, Validators.pattern(/^[0-9]+$/)]),
-      id: new FormControl('')
+      id: new FormControl(''),
+      pg_id: new FormControl('', [Validators.required])
     })
   
     filterSearch() {
@@ -94,22 +143,7 @@ export class TenantComponent {
       )
     }
   
-    resetFilterForm() {
-      this.filterForm.get('page')?.setValue(1)
-      this.GF.preserveField(this.filterForm, ['action', 'limit', 'sort'], null)
-      this.filterForm.patchValue({
-        status: '',
-        state: '',
-        limit: 10,
-        order: 'DESC',
-        sort_by: 'id',
-        page: 1,
-        pg_id: '',
-        district: '',
-      })
-      this.getTable()
-    }
-  
+   
     // table shorting 
     sortColumn: string = '';
     sortOrder: 'ASC' | 'DESC' = 'DESC';
@@ -128,13 +162,13 @@ export class TenantComponent {
   
     ADD() {
       this.dataForm.markAllAsTouched();
-  
+  console.log(this.dataForm.value)
       const formData = {
         ...this.dataForm.value,
       };
   
       if (this.dataForm.valid) {
-        this.api.postApi('add-pg-property', formData).subscribe(
+        this.api.postApi('add-tenant', formData).subscribe(
           (res: any) => {
             if (res.status) {
               this.GF.showToast(res.message, 'success')
