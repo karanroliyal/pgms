@@ -40,6 +40,11 @@ export const routes: Routes = [
                 path:'tenant',
                 title:'Tenant',
                 loadComponent: ()=>import ('./pages/tenant/tenant.component').then(m=>m.TenantComponent)
+            },
+            {
+                path:'complaints',
+                title:'Complaints',
+                loadComponent: ()=>import('./pages/complaints/complaints.component').then(m=>m.ComplaintsComponent)
             }
         ]
     },
