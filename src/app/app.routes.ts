@@ -1,15 +1,20 @@
 import { Routes } from '@angular/router';
 import { LogInComponent } from './pages/log-in/log-in.component';
+import { TenantLogInComponent } from './pages/tenant-log-in/tenant-log-in.component';
 
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'log-in',
+        redirectTo: 'tenant-log-in',
         pathMatch: 'full'
     },
     {
         path: 'log-in',
         component: LogInComponent
+    },
+    {
+        path: 'tenant-log-in',
+        component: TenantLogInComponent
     },
 
     {
