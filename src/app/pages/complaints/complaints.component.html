@@ -1,0 +1,175 @@
+<div class="complaint-wrapper">
+
+
+
+    <div class="row mx-0 p-0">
+        <div class="col-xl-3 col-md-3 col-sm-6 col-xs-6 mb-2 ">
+            <div class="shadow-sm card-theme-color my-dashboard-card rounded px-2 py-2 d-flex justify-content-between">
+                <div>
+                    <p class="fs-6 fw-light m-0">Active complaints</p>
+                    <p class="fs-5 fw-bold m-0">23</p>
+                </div>
+                <i class="bi bi-tools fs-4 text-danger"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-filter-container d-flex justify-content-end gap-2 position-relative mb-2">
+        <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i
+                class="bi bi-funnel"></i> Filter</button>
+        <button class="btn btn-sm btn-xsm btn-primary" (click)="OpenAddForm()" data-bs-toggle="modal"
+            data-bs-target="#exampleModal"><i class="bi bi-people"></i> Add Complaint</button>
+    </div>
+
+    <!-- Filter  -->
+
+    <div class="filter-conatiner card-theme-color rounded m-0 p-0 mb-2" [ngClass]="filterOption ? '' : 'd-none' ">
+        <form [formGroup]="filterForm" class="row mx-0 p-0 " (submit)="getTable()">
+
+            <div class="mb-2 col-md-2">
+                <label for="DescriptionId" class="form-label fs-10">Description </label>
+                <input type="text" id="DescriptionId" class="form-control form-control-sm "
+                    formControlName="description" placeholder="search description...">
+            </div>
+            <div class="mb-2 col-md-2">
+                <label for="statusId" class="form-label fs-10">Status</label>
+                <select class="form-select form-select-sm" id="statusId" formControlName="status">
+                    <option value="">select</option>
+                    <option selected value="pending">Pending</option>
+                    <option value="in-progress">In-progress</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            <div class=" col-md-3 d-flex gap-2 mt-4">
+                <button type="submit" (click)="this.filterForm.get('page')?.setValue(1)" class="my-btn-size success"><i
+                        class="bi bi-search"></i> search</button>
+                <button type="button" class="my-btn-size danger" (click)="resetFilterForm()"><i class="bi bi-x"></i>
+                    reset</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Filter  -->
+
+    <!-- Paggination and limit component  -->
+    <app-pagination [formGroup]="filterForm" [limit]="limit" [total_pages]="total_pages" [page_no]="page"
+        [callback]="getTable.bind(this)"></app-pagination>
+    <!-- Paggination and limit component  -->
+
+
+    <!-- table  -->
+
+    <div class="table-wrapper  rounded">
+
+        <table class="table fs-10 ">
+            <thead class="cursor-pointer user-selection-none">
+                <tr>
+                    <th>Sno.</th>
+                    <th>Description</th>
+                    <th>Attachment</th>
+                    <th>Categorie</th>
+                    <th>Status</th>
+                    <th>Created at</th>
+                    <th>Updated at</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for(items of table_data ; track $index ; let i = $index){
+                <tr>
+                    <td>{{ (page - 1) * limit + i + 1 }}</td>
+                    <td>{{items.description}}</td>
+                    <td class="text-muted">{{items.image === null ? 'No attachment' : items.image}}</td>
+                    <td>{{items.category}}</td>
+                    <td>
+                        <span class="badge bg-success"
+                            [ngClass]="items.status === 'pending' ? 'bg-success' : items.status === 'in-progress' ? 'bg-warning text-black' : 'bg-danger' ">
+                            {{ items.status === 'resolved' ? 'Resolved' : items.status === 'in-progress' ? 'In-Progress'
+                            : 'Pending' }}
+                        </span>
+                    </td>
+                    <td>{{items.created_at |  date:'medium'}}</td>
+                    <td>{{items.updated_at === null ?  'No update' : items.updated_at |  date:'medium'}}</td>
+                    <td class="d-flex justify-content-center gap-2">
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="my-btn-size primary"><i
+                                class="bi bi-pencil"></i></button>
+                        <button class="my-btn-size danger"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                }@empty{
+                <tr>
+                    <td colspan="8" class="text-center">No Complaint found </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- table  -->
+
+    <!-- Add Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Property' : 'Add Property'}}
+                    </h5>
+                    <button type="button" #modelClose class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form [formGroup]="myForm">
+
+                        <div class="row mx-0 p-0">
+
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Description <span class="text-danger">*</span> </label>
+
+                                <textarea class="form-control form-control-sm" maxlength="300"
+                                    formControlName="description" id=""></textarea>
+                                <app-form-validation-message [formGroup]="myForm" controlName="description"
+                                    fieldName="Description"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6  mb-3">
+                                <label>Complaint Category <span class="text-danger">*</span> </label>
+                                <select formControlName="category" class="form-select form-select-sm">
+                                    <option value="Food" selected>Food</option>
+                                    <option value="Water">Water</option>
+                                    <option value="Wi-Fi">Wi-Fi</option>
+                                    <option value="Electricity">Electricity</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <app-form-validation-message [formGroup]="myForm" controlName="category"
+                                    fieldName="Complaint category"></app-form-validation-message>
+                            </div>
+                            <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                <label>Attachment <span class="text-danger">*</span> </label>
+                                <input formControlName="image" (change)="fileUpload($event, 'Attachment')"
+                                    type="file" class="form-control form-control-sm">
+                                <app-form-validation-message [formGroup]="myForm" controlName="image"
+                                    fieldName="image"></app-form-validation-message>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" (click)="this.myForm.reset()"
+                        class="btn btn-sm btn-xsm btn-danger">reset</button>
+                    <button type="button" (click)="editMode? update() :add()"
+                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Complaint' : 'Add
+                        Complaint'}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Modal -->
+
+</div>
