@@ -60,7 +60,7 @@
 
     <!-- table  -->
 
-    <div class="table-wrapper  rounded">
+    <div class="table-wrapper  rounded overflow-x-auto">
 
         <table class="table fs-10 ">
             <thead class="cursor-pointer user-selection-none">
@@ -85,7 +85,7 @@
                     <td>{{items.category}}</td>
                     <td>
                         <span class="badge bg-success"
-                            [ngClass]="items.status === 'pending' ? 'bg-success' : items.status === 'in-progress' ? 'bg-warning text-black' : 'bg-danger' ">
+                            [ngClass]="items.status === 'resolved' ? 'bg-success' : items.status === 'in-progress' ? 'bg-warning text-black' : 'bg-danger' ">
                             {{ items.status === 'resolved' ? 'Resolved' : items.status === 'in-progress' ? 'In-Progress'
                             : 'Pending' }}
                         </span>
@@ -154,6 +154,18 @@
                                 <app-form-validation-message [formGroup]="myForm" controlName="image"
                                     fieldName="image"></app-form-validation-message>
                             </div>
+                            @if(editMode){
+                                <div class="col-xl-3 col-md-3 col-sm-6 mb-3">
+                                    <label>Status of complaint <span class="text-danger">*</span> </label>
+                                    <select formControlName="status" class="form-select form-select-sm">
+                                        <option value="pending" selected>Pending</option>
+                                        <option value="in-progress">In-Progress</option>
+                                        <option value="resolved">Resolved</option>
+                                    </select>
+                                    <app-form-validation-message [formGroup]="myForm" controlName="status"
+                                        fieldName="Complaint status"></app-form-validation-message>
+                                </div>
+                            }
 
                         </div>
 
