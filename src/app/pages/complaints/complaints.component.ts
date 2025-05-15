@@ -59,6 +59,7 @@ export class ComplaintsComponent implements OnInit {
       order: 'DESC',
       sort_by: 'id',
       page: 1,
+      description:''
     })
     this.getTable()
   }
