@@ -21,6 +21,7 @@ export class ComplaintsComponent implements OnInit {
   page: number = 0
   limit: number = 0
   total_pages: number = 0
+  editId: string = ''
   @ViewChild('modelClose') modelClose!: ElementRef;
 
   constructor(private api: ApiService, private GF: GlobalService) { }
@@ -43,7 +44,8 @@ export class ComplaintsComponent implements OnInit {
 
   myForm = new FormGroup({
     description: new FormControl('', [Validators.required, Validators.maxLength(300), Validators.minLength(3)]),
-    category: new FormControl('', [Validators.required, Validators.pattern(/^(Food|Water|Wi-Fi|Electricity|Other')$/)]),
+    category: new FormControl('', [Validators.required]),
+    // category: new FormControl('', [Validators.required, Validators.pattern(/^(Food|Water|Wi-Fi|Electricity|Other')$/)]),
     status: new FormControl('', [Validators.pattern(/^(pending|in-progress|resolved)$/)]),
     image: new FormControl('')
   })
@@ -119,8 +121,50 @@ export class ComplaintsComponent implements OnInit {
     this.getTable()
   }
 
-  update() {
+  UPDATE() {
+    this.myForm.markAllAsTouched();
+    const formData = {
+      ...this.myForm.value,
+      image: this.Attachment,
+      id: this.editId
+    };
+    if(this.myForm.valid){
+      this.api.postApi('update-complaint' , formData ).subscribe(
+        (res:any)=>{
+          if(res.status){
+            this.GF.showToast(res.message , 'success')
+            this.closeForm()
+          }else{
+            this.GF.showToast(res.message , 'danger')
+          }
+        },
+        (err:any)=>{
+          this.GF.showToast(err.error.message , 'danger')
+        }
+      )
+    }
+  }
 
+   EDIT(clientId:string){
+    this.myForm.markAsUntouched()
+    this.editMode = true
+    this.Attachment = ''
+    this.api.postApi('get-list' , {action:'tenant_complaint' , id:clientId}).subscribe(
+      (res:any)=>{
+        if(res.status){
+          this.editId = res.data.id
+          delete res.data['image']
+          delete res.data['password']
+          delete res.data['id']
+          this.myForm.patchValue(res.data);
+        }else{
+          this.GF.showToast(res.message , 'danger')
+        }
+      },
+      (err:any)=>{
+        this.GF.showToast(err.error.message , 'danger')
+      }
+    )
   }
 
 

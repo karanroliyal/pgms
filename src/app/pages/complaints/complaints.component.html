@@ -93,7 +93,7 @@
                     <td>{{items.created_at |  date:'medium'}}</td>
                     <td>{{items.updated_at === null ?  'No update' : items.updated_at |  date:'medium'}}</td>
                     <td class="d-flex justify-content-center gap-2">
-                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="my-btn-size primary"><i
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="my-btn-size primary" (click)="EDIT(items.id)"><i
                                 class="bi bi-pencil"></i></button>
                         <button class="my-btn-size danger"><i class="bi bi-trash"></i></button>
                     </td>
@@ -163,12 +163,12 @@
                 <div class="modal-footer">
                     <button type="button" (click)="this.myForm.reset()"
                         class="btn btn-sm btn-xsm btn-danger">reset</button>
-                    <button type="button" (click)="editMode? update() :add()"
+                    <button type="button" (click)="editMode? UPDATE() :add()"
                         class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Complaint' : 'Add
                         Complaint'}}</button>
                 </div>
             </div>
-        </div>
+        </div> 
     </div>
     <!-- Add Modal -->
 
