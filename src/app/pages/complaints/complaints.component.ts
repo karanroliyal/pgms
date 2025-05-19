@@ -5,6 +5,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ApiService } from '../../services/api.service';
 import { GlobalService } from '../../services/global.service';
 import { FormValidationMessageComponent } from '../../components/form-validation-message/form-validation-message.component';
+import {environment} from '../../../environments/environment.development'
+
+const server_url = environment.apiUrl
 
 @Component({
   selector: 'app-complaints',
@@ -14,6 +17,7 @@ import { FormValidationMessageComponent } from '../../components/form-validation
 })
 export class ComplaintsComponent implements OnInit {
 
+  server_url = server_url
   filterOption: boolean = false
   editMode: boolean = false
   table_data: any
@@ -22,6 +26,11 @@ export class ComplaintsComponent implements OnInit {
   limit: number = 0
   total_pages: number = 0
   editId: string = ''
+  pending_complaints: any[] = []
+  in_progress_complaints: any[] = []
+  resolved_complaints: any[] = []
+  imgSrc: string = ''
+
   @ViewChild('modelClose') modelClose!: ElementRef;
 
   constructor(private api: ApiService, private GF: GlobalService) { }
@@ -59,7 +68,7 @@ export class ComplaintsComponent implements OnInit {
       order: 'DESC',
       sort_by: 'id',
       page: 1,
-      description:''
+      description: ''
     })
     this.getTable()
   }
@@ -73,6 +82,7 @@ export class ComplaintsComponent implements OnInit {
           this.page = res.page
           this.total_records = res.total_records
           this.table_data = res.data
+          this.filterComplaints()
         } else {
           this.GF.showToast(res.message, 'danger')
         }
@@ -129,41 +139,41 @@ export class ComplaintsComponent implements OnInit {
       image: this.Attachment,
       id: this.editId
     };
-    if(this.myForm.valid){
-      this.api.postApi('update-complaint' , formData ).subscribe(
-        (res:any)=>{
-          if(res.status){
-            this.GF.showToast(res.message , 'success')
+    if (this.myForm.valid) {
+      this.api.postApi('update-complaint', formData).subscribe(
+        (res: any) => {
+          if (res.status) {
+            this.GF.showToast(res.message, 'success')
             this.closeForm()
-          }else{
-            this.GF.showToast(res.message , 'danger')
+          } else {
+            this.GF.showToast(res.message, 'danger')
           }
         },
-        (err:any)=>{
-          this.GF.showToast(err.error.message , 'danger')
+        (err: any) => {
+          this.GF.showToast(err.error.message, 'danger')
         }
       )
     }
   }
 
-   EDIT(clientId:string){
+  EDIT(clientId: string) {
     this.myForm.markAsUntouched()
     this.editMode = true
     this.Attachment = ''
-    this.api.postApi('get-list' , {action:'tenant_complaint' , id:clientId}).subscribe(
-      (res:any)=>{
-        if(res.status){
+    this.api.postApi('get-list', { action: 'tenant_complaint', id: clientId }).subscribe(
+      (res: any) => {
+        if (res.status) {
           this.editId = res.data.id
           delete res.data['image']
           delete res.data['password']
           delete res.data['id']
           this.myForm.patchValue(res.data);
-        }else{
-          this.GF.showToast(res.message , 'danger')
+        } else {
+          this.GF.showToast(res.message, 'danger')
         }
       },
-      (err:any)=>{
-        this.GF.showToast(err.error.message , 'danger')
+      (err: any) => {
+        this.GF.showToast(err.error.message, 'danger')
       }
     )
   }
@@ -182,5 +192,34 @@ export class ComplaintsComponent implements OnInit {
       };
     }
   }
+
+  filterComplaints() {
+    this.pending_complaints = [];
+    this.resolved_complaints = [];
+    this.in_progress_complaints = [];
+
+    this.table_data.forEach((ele: any) => {
+      switch (ele.status) {
+        case 'pending':
+          this.pending_complaints.push(ele);
+          break;
+        case 'resolved':
+          this.resolved_complaints.push(ele);
+          break;
+        case 'in-progress':
+          this.in_progress_complaints.push(ele);
+          break;
+      }
+    });
+
+    console.log(this.pending_complaints, 'hello ji');
+  }
+
+
+  openBigImage(imgUrl: any) {
+    console.log("Open image")
+    this.imgSrc = imgUrl
+  }
+
 
 }

@@ -4,7 +4,7 @@
         <button class="btn btn-sm btn-xsm btn-warning" (click)="filterOption = !filterOption"><i
                 class="bi bi-funnel"></i> Filter</button>
         <button class="btn btn-sm btn-xsm btn-primary" (click)="openADDForm()" data-bs-toggle="modal"
-            data-bs-target="#exampleModal"><i class="bi bi-people"></i> Add property</button>
+            data-bs-target="#exampleModal"><i class="bi bi-people"></i> Add Tenant</button>
     </div>
 
 
@@ -202,7 +202,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Property' : 'Add Property'}}
+                    <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Tenant' : 'Add Tenant'}}
                     </h5>
                     <button type="button" #modelClose class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal"
                         aria-label="Close"></button>
@@ -417,7 +417,7 @@
                     <button type="button" (click)="this.dataForm.reset()"
                         class="btn btn-sm btn-xsm btn-danger">reset</button>
                     <button type="button" (click)="editMode? UPDATE() :ADD()"
-                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Property' : 'Add Property'}}</button>
+                        class="btn btn-sm btn-xsm btn-primary">{{editMode ? 'Edit Tenant' : 'Add Tenant'}}</button>
                 </div>
             </div>
         </div>

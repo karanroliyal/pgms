@@ -1,15 +1,31 @@
 <div class="complaint-wrapper">
 
-
-
     <div class="row mx-0 p-0">
         <div class="col-xl-3 col-md-3 col-sm-6 col-xs-6 mb-2 ">
             <div class="shadow-sm card-theme-color my-dashboard-card rounded px-2 py-2 d-flex justify-content-between">
                 <div>
-                    <p class="fs-6 fw-light m-0">Active complaints</p>
-                    <p class="fs-5 fw-bold m-0">23</p>
+                    <p class="fs-6 fw-light m-0">Pending complaints</p>
+                    <p class="fs-5 fw-bold m-0">{{pending_complaints.length}}</p>
                 </div>
-                <i class="bi bi-tools fs-4 text-danger"></i>
+                <i class="bi bi-clock-history fs-3 text-danger"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-3 col-sm-6 col-xs-6 mb-2 ">
+            <div class="shadow-sm card-theme-color my-dashboard-card rounded px-2 py-2 d-flex justify-content-between">
+                <div>
+                    <p class="fs-6 fw-light m-0">In-Progress complaints</p>
+                    <p class="fs-5 fw-bold m-0">{{in_progress_complaints.length}}</p>
+                </div>
+                <i class="bi bi-hourglass-split fs-3 text-warning"></i>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-3 col-sm-6 col-xs-6 mb-2 ">
+            <div class="shadow-sm card-theme-color my-dashboard-card rounded px-2 py-2 d-flex justify-content-between">
+                <div>
+                    <p class="fs-6 fw-light m-0">Resolved complaints</p>
+                    <p class="fs-5 fw-bold m-0">{{resolved_complaints.length}}</p>
+                </div>
+                <i class="bi bi-hand-thumbs-up fs-3 text-success"></i>
             </div>
         </div>
     </div>
@@ -81,7 +97,10 @@
                 <tr>
                     <td>{{ (page - 1) * limit + i + 1 }}</td>
                     <td>{{items.description}}</td>
-                    <td class="text-muted">{{items.image === null ? 'No attachment' : items.image}}</td>
+                    <td><img (click)="openBigImage(profile_photo.src)" #profile_photo src="{{server_url}}static/{{items.profile_photo}}"
+                            class="rounded-circle object-fit-cover cursor-pointer" alt="profile photo" width="25px" height="25px"
+                            title="profile" data-bs-toggle="modal" data-bs-target="#imageModal"></td>
+                    <!-- <td class="text-muted">{{items.image === null ? 'No attachment' : items.image}}</td> -->
                     <td>{{items.category}}</td>
                     <td>
                         <span class="badge bg-success"
@@ -115,7 +134,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Property' : 'Add Property'}}
+                    <h5 class="modal-title fs-6" id="exampleModalLabel">{{editMode ? 'Edit Complaint' : 'Add Complaint'}}
                     </h5>
                     <button type="button" #modelClose class="btn-close btn btn-sm btn-xsm" data-bs-dismiss="modal"
                         aria-label="Close"></button>
