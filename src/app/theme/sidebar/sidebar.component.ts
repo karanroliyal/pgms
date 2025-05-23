@@ -17,7 +17,7 @@ export class SidebarComponent {
     {menu:"Rooms",icon_class:"bi bi-person-add", menu_url:"/rooms"},
     {menu:"Tenant",icon_class:"bi bi-person-gear", menu_url:"/tenant"},
     {menu:"Complaints",icon_class:"bi bi-person-gear", menu_url:"/complaints"},
-    {menu:"setting",icon_class:"bi bi-gear", menu_url:"/dashboard2"},
+    {menu:"setting",icon_class:"bi bi-gear", menu_url:"/setting"},
   ]
 
 }
