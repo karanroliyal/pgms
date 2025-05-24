@@ -5,7 +5,7 @@ import { TenantLogInComponent } from './pages/tenant-log-in/tenant-log-in.compon
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'tenant-log-in',
+        redirectTo: 'log-in',
         pathMatch: 'full'
     },
     {
@@ -50,6 +50,11 @@ export const routes: Routes = [
                 path:'complaints',
                 title:'Complaints',
                 loadComponent: ()=>import('./pages/complaints/complaints.component').then(m=>m.ComplaintsComponent)
+            },
+            {
+                path:'setting',
+                title:'Setting',
+                loadComponent: ()=>import('./pages/setting/setting.component').then(m=>m.SettingComponent)
             }
         ]
     },
