@@ -10,6 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       withInterceptors([addHeaderInterceptor])
-    )
+    ),
   ]
 };
