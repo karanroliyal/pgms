@@ -1,0 +1,488 @@
+<div class="w-full h-full p-2 overflow-y-auto">
+
+    <!-- Tabs Header -->
+    <div class="flex border-b justify-center border-gray-200 gap-4">
+        <button *ngFor="let tab of tabs" (click)="onTabChange(tab.id)" [ngClass]="{
+          'text-[color:var(--primary)] border-[color:var(--primary)]': activeTab === tab.id,
+          'text-gray-600 border-transparent':
+            activeTab !== tab.id
+        }" class="px-4 py-2 text-sm font-medium border-b-2 transition-colors duration-200">
+            {{ tab.label }}
+        </button>
+    </div>
+
+
+    <div class="p-1">
+
+        <div *ngIf="activeTab === 'tab1'">
+            <div class="w-full h-full  py-5" [formGroup]="searchForm">
+
+                <div class=" bg-[color:var(--background)] py-4 px-10  rounded-lg">
+                    <p class="text-1lg font-semibold mb-3">Filter User</p>
+                    <div class="gap-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)] mb-1">
+                                User Name
+                            </label>
+                            <input type="text" maxlength="30" placeholder="Enter User Name" formControlName="user_name"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg"
+                                [maxlength]="30" />
+
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)]mb-1">
+                                Email Id
+                            </label>
+                            <input type="text" maxlength="30" placeholder="Enter email id" formControlName="email_id"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg" />
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)] mb-1">
+                                Mobile No
+                            </label>
+                            <input (keypress)="global.numberOnly($event)" type="text" maxlength="30"
+                                placeholder="Enter Mobile number" formControlName="mobile_no"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg"
+                                [maxlength]="10" />
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" class="form-select" formControlName="status">
+                                <option value="">select</option>
+                                <option [value]="true">Active</option>
+                                <option [value]="false">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="">
+
+                            <button
+                                class=" text-sm text-[color:var(--primary)] border border-[color:var(--primary)]  bg-transparent py-2 px-4 rounded   hover:bg-[color:var(--primary)] hover:text-white transition disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent"
+                                (click)="filterList()">
+                                <span>Search</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <app-pagination-and-limit [total_items]="total_items" [current_page]="current_page" [limit]="limit"
+                (limitChange)="changeLimit($event)" (pageChange)="changePage($event)" />
+            <div class="grid grid-cols-1 gap-4">
+                <div class="overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-[color:var(--table-head)]">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Sno.
+                                </th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                    (click)="global.sortingTable('user_name', searchForm, getList.bind(this))">
+                                    <div class="flex items-center gap-2">
+                                        User Name <app-sorting column_name="user_name"></app-sorting>
+                                    </div>
+                                </th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                    (click)="global.sortingTable('email_id', searchForm, getList.bind(this))">
+                                    <div class="flex items-center gap-2">
+                                        Email Id <app-sorting column_name="email_id"></app-sorting>
+                                    </div>
+                                </th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                                    (click)="global.sortingTable('mobile_no', searchForm, getList.bind(this))">
+                                    <div class="flex items-center gap-2 justify-center">
+                                        Phone<app-sorting column_name="mobile_no"></app-sorting>
+                                    </div>
+                                </th>
+
+                                <th scope="col"
+                                    class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="bg-[color:var(--table-body)] divide-y divide-[color:var(--border)] ">
+                            @for(item of table_data; track $index){
+                            <tr class="hover:bg-[color:var(--pattern-fg)] ">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    {{$index +1}}
+                                </td>
+
+                                <td class="px-6 py-4 text-[color:var(--primary)] cursor-pointer whitespace-nowrap text-start text-sm font-medium"
+                                    (click)="edit(item.id)">
+                                    {{item.user_name}}
+                                </td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
+                                    {{ item.email_id }}
+
+                                </td>
+
+                                <td class="px-6 py-4 text-center whitespace-nowrap  text-sm font-medium ">
+                                    {{item.mobile_no}}
+                                </td>
+                                <td class="px-6 py-4 text-start whitespace-nowrap text-sm font-medium">
+                                    <span *ngIf="item.status === true || item.status === 'true'"
+                                        class="text-green-500">Active</span>
+                                    <span *ngIf="item.status === false || item.status === 'false'"
+                                        class="text-red-500">Inactive</span>
+                                </td>
+
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm ">
+                                    <div class="flex items-center justify-center">
+                                        <svg-icon (click)="Delete(item?.id)"
+                                            src="assets/icons/heroicons/outline/delete.svg"
+                                            class="size-5 cursor-pointer">
+                                        </svg-icon>
+                                        <svg-icon (click)="edit(item?.id)" src="assets/icons/heroicons/outline/edit.svg"
+                                            class="size-5 mx-2 cursor-pointer">
+                                        </svg-icon>
+                                    </div>
+                                </td>
+                            </tr>
+                            }@empty(){
+                            <tr>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium" colspan="6">No
+                                    Agent
+                                    Found</td>
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="activeTab === 'tab2'">
+            <div class="w-full h-full  py-5" [formGroup]="dataForm">
+                <div class=" bg-[color:var(--background)] py-4 px-10  rounded-lg">
+
+                    <p class="text-1lg font-semibold mb-3">
+                        @if(isEdit){
+                        Update User
+                        } @else {
+                        Create User
+                        }
+                    </p>
+                    <div class="gap-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)] mb-1">
+                                First Name<span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" maxlength="30" placeholder="Enter first name"
+                                formControlName="first_name"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg"
+                                [maxlength]="30" />
+                            <app-form-field-error [control]="dataForm.get('first_name')" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)] mb-1">
+                                Last Name<span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" maxlength="30" placeholder="Enter last name" formControlName="last_name"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg"
+                                [maxlength]="30" />
+                            <app-form-field-error [control]="dataForm.get('last_name')" />
+                        </div>
+
+
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)]mb-1">
+                                Email Id<span class="text-red-600">*</span>
+                            </label>
+                            <input type="text" maxlength="30" placeholder="Enter email id" formControlName="email_id"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg" />
+                            <app-form-field-error [control]="dataForm.get('email_id')" />
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)] mb-1">
+                                Mobile No<span class="text-red-600">*</span>
+                            </label>
+                            <input (keypress)="global.numberOnly($event)" type="text" maxlength="30"
+                                placeholder="Enter Mobile number" formControlName="mobile_no"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg"
+                                [maxlength]="10" />
+                            <app-form-field-error [control]="dataForm.get('mobile_no')" />
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-[color:var(--foreground)] mb-1">
+                                Password<span class="text-red-600">*</span>
+                            </label>
+                            <input type="password" maxlength="30" placeholder="Enter current password"
+                                formControlName="password"
+                                class="w-full px-4 bg-[color:var(--background)] py-2 text-sm border border-gray-300 rounded-lg"
+                                [maxlength]="30" />
+                            <app-form-field-error [control]="dataForm.get('password')" />
+                        </div>
+                        <div>
+
+                            <div class=" flex flex-col col-span-6">
+                                <label for="radio1"
+                                    class="block text-sm font-medium text-[color:var(--foreground)] mb-2">Status</label>
+                                <div class="flex gap-2">
+                                    <div class="mb-2 flex items-center">
+                                        <input id="radio1" type="radio" formControlName="status" [value]="true"
+                                            class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked />
+                                        <label for="radio1" class="ml-2 text-sm text-gray-700">
+                                            Active
+                                        </label>
+                                    </div>
+                                    <div class="mb-2 flex items-center">
+                                        <input id="radio2" type="radio" formControlName="status" [value]="false"
+                                            class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" />
+                                        <label for="radio2" class="ml-2 text-sm text-gray-700">
+                                            Inactive
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-5">
+
+                        <button
+                            class="mt-4  text-sm text-[color:var(--primary)] border border-[color:var(--primary)]  bg-transparent py-2 px-4 rounded flex items-center justify-center gap-2 hover:bg-[color:var(--primary)] hover:text-white transition disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent"
+                            (click)="saveUserData()">
+                            @if(isEdit){
+                            <span>Update</span>
+                            }
+                            @else {
+                            <span>Save</span>
+                            }
+                        </button>
+    
+                        <button class="mt-4 text-sm text-[color:var(--primary)] border border-[color:var(--primary)]  bg-transparent py-2 px-4 rounded flex items-center justify-center gap-2 hover:bg-[color:var(--primary)] hover:text-white transition disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent" (click)="resetForm()" >reset</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+import { Component, OnInit } from '@angular/core';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormFieldErrorComponent } from "../../utility/form-field-error/form-field-error.component";
+import { GlobalFunctionService } from '../../Services/service/global-function.service';
+import { PaginationAndLimitComponent } from "../../components/pagination-and-limit/pagination-and-limit.component";
+import { SortingComponent } from "../../components/sorting/sorting.component";
+import { ConfirmDialogService } from '../../Services/service/confirm-dialog.service';
+
+@Component({
+  selector: 'app-user-master',
+  imports: [AngularSvgIconModule, CommonModule, ReactiveFormsModule, FormFieldErrorComponent, PaginationAndLimitComponent, SortingComponent],
+  templateUrl: './user-master.component.html',
+  styleUrl: './user-master.component.css'
+})
+export class UserMasterComponent implements OnInit {
+  showModal: boolean = false;
+  dataForm: any;
+  isAdd: boolean = true;
+  table_data: any;
+  isEdit: boolean = false;
+  total_items: number = 0
+  current_page: number = 0
+  limit: number = 10
+  activeTab = 'tab1'
+
+  ngOnInit(): void {
+    this.onTabChange(this.activeTab)
+    this.getList();
+  }
+
+  constructor(public global: GlobalFunctionService, public confirmDialog: ConfirmDialogService) {
+    this.dataForm = new FormGroup(
+      {
+        id: new FormControl(''),
+        first_name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
+        last_name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]),
+        email_id: new FormControl('', [Validators.required, Validators.email]),
+        mobile_no: new FormControl('', [Validators.required, Validators.maxLength(10), Validators.minLength(10)]),
+        password: new FormControl('', [Validators.required, Validators.maxLength(20), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/)]),
+        status: new FormControl(true)
+      }
+    )
+  }
+
+  tabs = [
+    { id: 'tab1', label: 'All User' },
+    { id: 'tab2', label: 'Add User' },
+  ]
+
+  onTabChange(tab_id: string) {
+    this.activeTab = tab_id
+    if (tab_id == 'tab1') {
+      this.isEdit = false;
+      this.resetForm();
+      this.tabs[1].label = 'Add User'
+    } else if (tab_id == 'tab2') {
+    }
+
+  }
+
+  searchForm = new FormGroup({
+    sort_by: new FormControl('id'),
+    sort_order: new FormControl('DESC'),
+    current_page: new FormControl(1),
+    limit: new FormControl(10),
+    user_name: new FormControl(''),
+    mobile_no: new FormControl(''),
+    email_id: new FormControl(''),
+    status: new FormControl('')
+  })
+
+
+
+  changeLimit(limit: number) {
+    this.limit = limit;
+    this.current_page = 1;
+    this.searchForm.get('limit')?.setValue(limit);
+    this.searchForm.get('current_page')?.setValue(1);
+    this.getList();
+  }
+
+  changePage(current_page: number) {
+    this.current_page = current_page;
+    this.searchForm.get('current_page')?.setValue(current_page);
+    this.getList();
+  }
+
+  filterList(){
+    this.searchForm.get('current_page')?.setValue(1)
+    this.getList()
+  }
+
+  getList() {
+    this.global.api.postApi('userGetList', this.searchForm.value).subscribe(
+      (res: any) => {
+        if (res.status) {
+          this.table_data = res.data.records
+          this.total_items = res.data.total
+          this.current_page = res.data.current_page
+        } else {
+          this.global.alert.notify('error', res.message)
+        }
+      },
+      (err: any) => {
+        this.global.alert.notify('error', err.error?.message)
+      }
+    )
+  }
+
+  edit(id: any) {
+    this.activeTab = 'tab2';
+    this.isEdit = true;
+    this.tabs[1].label = 'Edit User'
+    this.global.api.postApi('getList', { id: id, list_name: 'bot_app_client_user_master' }).subscribe(
+      (res: any) => {
+        if (res.status) {
+          this.dataForm.patchValue(res.data[0]);
+        } else {
+          this.global.alert.notify('error', res.message)
+        }
+      },
+      (err: any) => {
+        this.global.alert.notify('error', err.error?.message)
+      }
+    )
+  }
+
+  async Delete(id: string | number) {
+    const result = await this.confirmDialog.confirm(
+      'Do you really want to delete Agent?',
+      'Delete Confirmation',
+      'Delete',
+      'Cancel'
+    );
+    if (result) {
+      this.global.api.postApi('delete', { name: "user_master", id: id }).subscribe(
+        (res: any) => {
+          if (res.status) {
+            this.global.alert.notify('success', res.message)
+            this.getList()
+          } else {
+            this.global.alert.notify('error', res.message)
+          }
+        },
+        (err: any) => {
+          this.global.alert.notify('error', err?.message)
+        }
+      )
+    }
+
+
+  }
+
+  saveUserData() {
+    const passwordControl = this.dataForm.get('password');
+    if (this.dataForm.get('id').value == '') {
+      passwordControl?.setValidators([Validators.required, Validators.pattern(this.global.password_regex)]);
+    } else {
+      passwordControl?.clearValidators();
+    }
+    passwordControl?.updateValueAndValidity();
+    this.dataForm.markAllAsTouched();
+    if (this.dataForm.valid) {
+      this.global.api.postApi('addUpdateUsers', this.dataForm.value).subscribe(
+        (res: any) => {
+          if (res.status) {
+            this.global.alert.notify('success', res.message);
+            this.getList();
+            this.activeTab = 'tab1'
+            this.resetForm();
+            this.isEdit = false;
+          } else {
+            this.global.alert.notify('error', res.message)
+          }
+        },
+        (err: any) => {
+          this.global.alert.notify('error', err.error?.message)
+        }
+      )
+
+
+    }
+
+  }
+
+  resetForm(){
+    this.dataForm.get('status').setValue(true)
+    if(this.isEdit){
+      this.global.resetForm(this.dataForm, [ 'id', 'status' ]);
+    }else{
+      this.global.resetForm(this.dataForm, [ 'status' ]);
+    }
+  };
+
+
+}
+
+
+
+
