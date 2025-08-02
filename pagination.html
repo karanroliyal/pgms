@@ -1,0 +1,75 @@
+<div class="flex items-center justify-between  px-1 py-3 sm:px-1">
+    <div class="flex flex-1 justify-between sm:hidden">
+        <a href="#"
+            class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+        <a href="#"
+            class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+    </div>
+    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div class="flex items-center gap-3">
+            <select #limitChan (change)="changeLimit(+limitChan.value)"
+                class="block rounded-md bg-[color:var(--card-foreground)] px-2 py-1 text-sm  outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-[color:var(--primary)]">
+                <option *ngFor="let option of limitOptions" [value]="option" [selected]="option === limit">{{ option }}
+                </option>
+            </select>
+            <p class="text-sm text-[color:var(--forground)]">
+                Pages:
+                <span class="font-medium">{{current_page}}</span>
+                of
+                <span class="font-medium">{{total_pages}} &nbsp;&nbsp; </span>
+                Total records:
+                <span class="font-medium">{{total_items}}</span>
+            </p>
+        </div>
+        <div>
+            <nav class="isolate inline-flex -space-x-px rounded-md shadow-xs cursor-pointer" aria-label="Pagination">
+                <li (click)="firstPage()"
+                    class="relative inline-flex items-center rounded-l-md px-2 py-1 text-gray-400 ring-1 ring-gray-300 ring-inset  focus:z-20 focus:outline-offset-0"
+                    [ngClass]="(current_page == 1 || total_pages == 0) ? 'bg-gray-300 hover:bg-gray-300' : 'hover:bg-[color:var(--primary)]'">
+                    <span class="sr-only">First</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                        stroke="currentColor" class="size-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
+                    </svg>
+
+
+                </li>
+                <li (click)="previousPage()"
+                    class="relative inline-flex items-center  px-2 py-1 text-gray-400 ring-1 ring-gray-300 ring-inset focus:z-20 focus:outline-offset-0"
+                    [ngClass]="(current_page == 1 || total_pages == 0) ? 'bg-gray-300 hover:bg-gray-300' : 'hover:bg-[color:var(--primary)]-200'">
+                    <span class="sr-only">Previous</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                        stroke="currentColor" class="size-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                </li>
+                <li aria-current="page"
+                    class="text-sm relative z-10 inline-flex items-center bg-[color:var(--primary)] px-2 py-1 font-semibold text-white focus:z-20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--primary)]">
+                    {{current_page}}</li>
+
+                <li (click)="nextPage()"
+                    class="relative inline-flex items-center  px-2 py-1 text-gray-400 ring-1 ring-gray-300 ring-inset focus:z-20 focus:outline-offset-0"
+                    [ngClass]="(current_page == total_pages || total_pages == 0) ? 'bg-gray-300 hover:bg-gray-300' : 'hover:bg-[color:var(--primary)]-200'">
+                    <span class="sr-only">Next</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                        stroke="currentColor" class="size-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+
+                </li>
+                <li (click)="lastPage()"
+                    class="relative inline-flex items-center rounded-r-md px-2 py-1 text-gray-400 ring-1 ring-gray-300 ring-inset focus:z-20 focus:outline-offset-0"
+                    [ngClass]="(current_page == total_pages || total_pages == 0) ? 'bg-gray-300 hover:bg-gray-300' : 'hover:bg-[color:var(--primary)]'">
+                    <span class="sr-only">Last</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                        stroke="currentColor" class="size-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
+                    </svg>
+
+                </li>
+            </nav>
+        </div>
+    </div>
+</div>
