@@ -1,0 +1,272 @@
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import Swal from 'sweetalert2';
+import { jwtDecode } from 'jwt-decode'
+import { AlertService } from './alert.service';
+import { CookieService } from 'ngx-cookie-service';
+import { ApiService } from './api.service';
+
+interface client_data {
+  client_id: number
+  client_firstname: string,
+  client_lastname: string,
+  client_phone: string,
+  client_email: string,
+  client_password: any,
+  client_initial_name: string,
+  client_menu_data: any,
+  is_admin: boolean,
+  google: boolean
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GlobalFunctionService {
+
+  public client_data: client_data = {
+    client_id: 0,
+    client_firstname: '',
+    client_lastname: '',
+    client_phone: '',
+    client_email: '',
+    client_initial_name: '',
+    client_password: '',
+    client_menu_data: [],
+    is_admin: false,
+    google: false
+  }
+
+  constructor(public router: Router, public alert: AlertService, public cookies: CookieService, public api: ApiService) {
+  }
+
+  password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
+  phone_regex = /^[0-9]{10,16}$/
+  status_regex = /^(0|1)$/
+  boolean_regex = /^(false|true)$/
+  selcted_agent_id = ''
+
+  private isCollapsedSubject = new BehaviorSubject<boolean>(false);
+  isCollapsed$ = this.isCollapsedSubject.asObservable();
+
+  toggle(): void {
+    const current = this.isCollapsedSubject.value;
+    this.isCollapsedSubject.next(!current);
+  }
+
+  setState(state: boolean): void {
+    this.isCollapsedSubject.next(state);
+  }
+
+  llm_model = [
+    { id: "deepseek-r1-distill-llama-70b", value: "deepseek-r1-distill-llama-70b" },
+    { id: "llama-3.3-70b-versatile", value: "llama-3.3-70b-versatile" },
+    { id: "meta-llama/llama-4-scout-17b-16e-instruct", value: "meta-llama/llama-4-scout-17b-16e-instruct" },
+    { id: "mistral-saba-24b", value: "mistral-saba-24b" },
+    { id: "meta-llama/llama-guard-4-12b", value: "meta-llama/llama-guard-4-12b" },
+    { id: "gemma2-9b-it", value: "gemma2-9b-it" },
+  ]
+
+
+  resetForm(formGroup: FormGroup, preserveFields: string[] = []): void {
+    const rawValues = formGroup.getRawValue();
+
+    // Create a new object with preserved values
+    const preservedValues: any = {};
+    preserveFields.forEach((field) => {
+      preservedValues[field] = rawValues[field];
+    });
+
+    // Reset the form while restoring preserved values
+    formGroup.reset();
+
+    // Patch preserved values back into the form
+    formGroup.patchValue(preservedValues);
+  }
+
+  private allPermissions: any[] = [];
+
+  setPermissions(permissionData: any[]) {
+    this.allPermissions = permissionData;
+  }
+
+  getPermissionsByMenuId(menu_id: number) {
+    const menu = this.allPermissions.find((item) => item.menu_id === menu_id);
+
+    return {
+      add_rights: menu?.add_right || 0,
+      view_rights: menu?.view_right || 0,
+      update_rights: menu?.update_right || 0,
+      delete_rights: menu?.delete_right || 0,
+    };
+  }
+
+  // Optional: check individual right
+  hasRight(menu_id: number, right: 'add' | 'view' | 'update' | 'delete'): boolean {
+    const perms = this.getPermissionsByMenuId(menu_id);
+    return perms[`${right}_rights`] === 1;
+  }
+
+  removeTrailingComma(str: any) {
+    str = str.trim();
+    if (str.endsWith(',')) {
+      return str.slice(0, -1).trim();
+    }
+    return str;
+  }
+
+
+  preserveField(formGroup: FormGroup, dontReset: string[], imageRemoveFunction: Function | null, RemoveCloneFunction?: Function) {
+    const preservedValues: { [key: string]: any } = {};
+    dontReset.forEach((controlName) => {
+      preservedValues[controlName] = formGroup.get(controlName)?.value;
+    });
+    formGroup.reset(preservedValues);
+    if (imageRemoveFunction !== null) {
+      imageRemoveFunction();
+    }
+  }
+
+  async showConfirmAlert(
+    title: string = 'Are you sure?',
+    text: string = 'Do you want to proceed?',
+    confirmText: string = 'Yes',
+    cancelText: string = 'Cancel'
+  ): Promise<any> {
+    return await Swal.fire({
+      title,
+      text,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: confirmText,
+      cancelButtonText: cancelText,
+      confirmButtonColor: '#1abc9c',
+      cancelButtonColor: '#e74c3c',
+      width: '300px',
+      background: '#2c3e50',
+      color: '#ffffff',
+      customClass: {
+        popup: 'my-swal-popup',
+        title: 'my-swal-title',
+        htmlContainer: 'my-swal-text',
+        actions: 'my-swal-actions',
+        confirmButton: 'my-swal-confirm',
+        cancelButton: 'my-swal-cancel'
+      }
+    });
+  }
+
+  logout() {
+
+    this.api.postApi('logout', {}).subscribe(
+      (res: any) => {
+
+        localStorage.clear()
+        this.cookies.deleteAll()
+
+        this.router.navigate(['/login'])
+      },
+      (err: any) => {
+        this.alert.notify('error', err?.error?.message)
+      }
+    )
+
+
+  }
+
+
+  private menuReadySubject = new BehaviorSubject<boolean>(false);
+  public menuReady$ = this.menuReadySubject.asObservable();
+
+  decode_token() {
+    const token: any = localStorage.getItem('token')
+    const data: any = localStorage.getItem('data')
+    const decoded: any = jwtDecode(token);
+    const decodedData: any = jwtDecode(data)
+    this.client_data.client_firstname = decoded.client_data.first_name
+    this.client_data.client_lastname = decoded.client_data.last_name
+    this.client_data.client_email = decoded.client_data.email_id
+    this.client_data.client_phone = decoded.client_data.mobile_no
+    this.client_data.client_password = decoded.client_data.password
+    this.client_data.is_admin = decoded.client_data.is_admin
+    this.client_data.client_id = decoded.client_data.client_id
+    this.client_data.google = decoded.client_data.google
+    this.client_data.client_initial_name = this.getInital(decoded.client_data.first_name, decoded.client_data.last_name)
+    this.client_data.client_menu_data = decodedData.menu_data
+
+    console.log(decodedData, 'check token data')
+
+    this.menuReadySubject.next(true);
+  }
+
+  getInital(firstName: string, lastName: string): string {
+    let initials = firstName.split('')[0].toUpperCase() + lastName.split('')[0].toUpperCase()
+    return initials
+  }
+
+
+  sort_order = 'DESC'
+  sort_column = ''
+
+  sortingTable(sortOn: string, formGroup: FormGroup, getList: Function) {
+    if (this.sort_column === sortOn) {
+      this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+    } else {
+      this.sort_column = sortOn;
+      this.sort_order = 'ASC';
+    }
+    formGroup.controls['sort_order'].setValue(this.sort_order);
+    formGroup.controls['sort_by'].setValue(sortOn);
+    getList();
+  }
+
+  // number only function 
+  numberOnly(event: any): boolean {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+
+
+  //decimal number
+  decimalNumberOnly(event: any): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    const inputElement = event.target as HTMLInputElement;
+    const currentValue = inputElement.value;
+
+    // Allow numbers (0-9), dot (.) but only one decimal point
+    if ((charCode >= 48 && charCode <= 57) || (charCode === 46 && !currentValue.includes('.'))) {
+      return true;
+    }
+
+    event.preventDefault();
+    return false;
+  }
+
+
+  handleDecimalValidation(formControlName: any, controlName: string) {
+    const control = formControlName.get(controlName);
+    if (!control) return;
+    let value = parseFloat(control.value);
+    if (isNaN(value)) {
+      value = 0;
+    }
+
+    control.setValue(value.toFixed(2), { emitEvent: false });
+  }
+
+
+  services = [
+    { service_id: 1, service_name: 'Transcription' , routes:'transcription'},
+    { service_id: 2, service_name: 'IVR Bot' , routes:'ivr-bot'},
+    { service_id: 3, service_name: 'Chat Bot' , routes:'chat-bot'},
+    { service_id: 4, service_name: 'Quality Audit' , routes:'qa-home'},
+    { service_id: 5, service_name: 'Sentiment' , routes:'sentiment'},
+  ]
+
+}
+
